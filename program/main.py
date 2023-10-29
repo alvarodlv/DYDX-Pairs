@@ -1,5 +1,6 @@
 from dydx import DYDX
 from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS
+from cointegrated_pairs import calc_half_life, calc_z_score, calc_coint
 from pprint import pprint
 
 if __name__ == '__main__':
@@ -17,6 +18,7 @@ if __name__ == '__main__':
     # Find cointegrated pairs
     if FIND_CONIT_PARIS:
         df_market_prices = dYdX.construct_market_prices(client)
+        pprint(df_market_prices)
 
     # 
 

@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from decouple import config
+from timeit import default_timer as timer
 from pprint import pprint
 from datetime import datetime, timedelta
 from dydx3 import Client
@@ -30,7 +31,6 @@ class DYDX():
         return
 
     def connect_dydx(self):
-
         '''
         Establish connection to dYdX platform.
         :return: dYdX client
@@ -63,7 +63,6 @@ class DYDX():
         return client
     
     def account_info(self, client):
-
         '''
         Retrieve account informatiion.
 
@@ -86,7 +85,6 @@ class DYDX():
         return account
     
     def place_market_order(self, client, market, side, size, price, reduce_only):
-
         '''
         Place market order.
 
@@ -141,7 +139,6 @@ class DYDX():
         return placed_order.data
     
     def abort_all_positions(self, client):
-
         '''
         Aborts all positions. 
         1. Find tickSize for all pairs
@@ -194,21 +191,84 @@ class DYDX():
             
         return close_orders
     
-    def construct_market_prices(self, client):
+    def get_hist_candles(self, client, market):
 
+        # Define output
+        close_prices = []
+
+        # Extract historical price data for each timeframe
+        ISO_TIMES = get_iso()
+        for timeframe in ISO_TIMES.keys():
+
+            # Confirm times needewd
+            tf_obj = ISO_TIMES[timeframe]
+            from_iso = tf_obj['from_iso']
+            to_iso = tf_obj['to_iso']
+
+            # Get data
+            candles = client.public.get_candles(
+                market=market,
+                resolution=RESOLUTION,
+                from_iso=from_iso,
+                to_iso=to_iso,
+                limit=100
+            )
+
+            # Structure data
+            for candle in candles.data['candles']:
+                close_prices.append({'datetime': candle['startedAt'], market: candle['close']})
+
+            # Construct dict
+            close_prices.reverse()
+
+        return close_prices
+
+
+    
+    def construct_market_prices(self, client):
         '''
         Construct dataframe of market prices.
 
         :param client: dYdX client
-        :return : dataframe 
+        :return df: dataframe containing close prices
         '''
 
         # Log
         self.logger.info(f'[START] Constructing market prices.')
+        start = timer()
 
-        # Get time periods
-        ISO_TIMES = get_iso()
+        # Define variables
+        tradeable_markets = []
+        markets = client.public.get_markets()
 
-        pprint(ISO_TIMES)
+        # Find tradeable pairs
+        self.logger.info(f'[ACTION] Finding tradeable market pairs.')
+        for market in markets.data['markets'].keys():
+            market_info = markets.data['markets'][market]
+            if market_info['status'] == 'ONLINE' and market_info['type'] == 'PERPETUAL':
+                tradeable_markets.append(market)
 
-        return
+        # Set initial dataframe
+        close_prices = self.get_hist_candles(client, tradeable_markets[0])
+        df = pd.DataFrame(close_prices)
+        df.set_index('datetime', inplace=True)
+
+        # Append other prices to df
+        self.logger.info(f'[ACTION] Constructing market prices dataframe.')
+        for market in tradeable_markets[1:]:
+            close_prices_add = self.get_hist_candles(client, market)
+            df_add = pd.DataFrame(close_prices_add)
+            df_add.set_index('datetime', inplace=True)
+            df = pd.merge(df, df_add, how='outer', on='datetime', copy=False)
+            del df_add
+
+        # Check any cols with Nan
+        nans = df.columns[df.isna().any()].tolist()
+        if len(nans) > 0:
+            self.logger.info(f'[ACTION] Dropping following market pairs with Nans: {nans}.')
+            df.drop(columns=nans, inplace=True)
+        
+        end = timer()
+        self.logger.info(f'[COMPLETE] Market prices stored in dataframe. {round((end-start)/60,2)} mins')
+
+        return df
