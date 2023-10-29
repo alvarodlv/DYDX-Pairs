@@ -1,4 +1,4 @@
 .env
 .venv
 logging/
-program/coint_pairs.csv
+coint_pairs.csv
