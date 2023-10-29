@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from dydx3 import Client
 from web3 import Web3
 from funcs import initiate_logger, format_price, get_iso
+from cointegrated_pairs import calc_z_score
 from constants import (
     HOST,
     ETHEREUM_ADDRESS,
@@ -18,7 +19,10 @@ from constants import (
     DYDX_PASSPHRASE,
     STARK_PRIVATE_KEY,
     HTTP_PROVIDER,
-    RESOLUTION
+    RESOLUTION,
+    ZSCORE_THRESH,
+    USD_PER_TRADE,
+    USD_MIN_COLLATERAL
 )
 
 
@@ -98,7 +102,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[START] Placing market order for {market} at quantity {size}.')
+        self.logger.info(f'[START] Placing market order for. Market: {market}; Side: {side}; Size: {size}; Price: {price}.')
 
 
         # Get Position ID
@@ -272,3 +276,75 @@ class DYDX():
         self.logger.info(f'[COMPLETE] Market prices stored in dataframe. {round((end-start)/60,2)} mins')
 
         return df
+    
+    def check_order_status(self, client, orderId):
+        '''
+        Check status of specific order. 
+
+        :param client: dYdX client
+        :param orderId: Order identifier.
+
+        :return status: Status of order queried
+        '''
+
+        order = client.private.get_order_by_id(orderId)
+
+        return order.data['order']['status']
+    
+    def get_recent_candles(self, client, market):
+        '''
+        
+        '''
+
+        # Initialise array
+        close_prices = []
+        time.sleep(0.2)
+
+        # Get candles
+        candles = client.public.get_candles(
+            market=market,
+            resolution=RESOLUTION,
+            limit=100
+        )
+
+        # Structure data
+        for candle in candles.data['candles']:
+            close_prices.append(candle['close'])
+
+        # Construct and return close price series
+        close_prices.reverse()
+        prices_result = np.array(close_prices).astype(float)
+
+        return prices_result
+
+    def is_open_postions(client, market):
+        '''
+        
+        '''
+
+        time.sleep(0.2)
+
+        # Get positions
+        all_positions = client.private.get_positions(
+            market=market,
+            status='OPEN',
+        )
+
+        # Determine if open
+        if len(all_positions.data['positions']) > 0:
+            return True
+        else:
+            return False
+    
+    def open_positions(self, client):
+        '''
+        FINISH!
+        '''
+
+        # Load coint pairs
+        df = pd.read_csv('coint_pairs.csv')
+
+        print(df)
+
+        return
+
