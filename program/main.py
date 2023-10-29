@@ -1,5 +1,5 @@
-from private_dydx import DYDX
-from constants import ABORT_ALL_POSITIONS
+from dydx import DYDX
+from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS
 from pprint import pprint
 
 if __name__ == '__main__':
@@ -13,4 +13,8 @@ if __name__ == '__main__':
     # Abort all open positions
     if ABORT_ALL_POSITIONS:
         close_orders = dYdX.abort_all_positions(client)
-        pprint(close_orders)
+
+    # Find cointegrated pairs
+    if FIND_CONIT_PARIS:
+        df_market_prices = dYdX.construct_market_prices(client)
+

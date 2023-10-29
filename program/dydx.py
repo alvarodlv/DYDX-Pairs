@@ -1,11 +1,14 @@
 import logging
 import time
+import numpy as np
+import pandas as pd
 
 from decouple import config
+from pprint import pprint
 from datetime import datetime, timedelta
 from dydx3 import Client
 from web3 import Web3
-from funcs import initiate_logger, format_price
+from funcs import initiate_logger, format_price, get_iso
 from constants import (
     HOST,
     ETHEREUM_ADDRESS,
@@ -13,7 +16,8 @@ from constants import (
     DYDX_API_SECRET,
     DYDX_PASSPHRASE,
     STARK_PRIVATE_KEY,
-    HTTP_PROVIDER
+    HTTP_PROVIDER,
+    RESOLUTION
 )
 
 
@@ -154,3 +158,15 @@ class DYDX():
                 time.sleep(.05)
             
         return close_orders
+    
+    def construct_market_prices(self, client):
+
+        # Log
+        self.logger.info(f'[START] Constructing market prices.')
+
+        # Get time periods
+        ISO_TIMES = get_iso()
+
+        pprint(ISO_TIMES)
+
+        return
