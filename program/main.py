@@ -18,3 +18,5 @@ if __name__ == '__main__':
     if FIND_CONIT_PARIS:
         df_market_prices = dYdX.construct_market_prices(client)
 
+    # 
+

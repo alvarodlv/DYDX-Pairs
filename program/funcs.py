@@ -3,6 +3,13 @@ import logging
 from datetime import datetime, timedelta
 
 def initiate_logger(file):
+
+    '''
+    Initiates logging.
+
+    :param file: name of log file to initiate
+    :return logger: logger object
+    '''
     logger = logging.getLogger(__name__)
     logging.getLogger().setLevel(logging.DEBUG)
 
@@ -20,6 +27,13 @@ def initiate_logger(file):
 
 def format_price(curr_num, match_num):
 
+    '''
+    Format price to match tickSize of market pair.
+
+    :param curr_num: quantity of market pair to trade
+    :param match_num: tickSize of market pair
+    '''
+
     curr_num_str = f'{curr_num}'
     match_num_str = f'{match_num}'
 
@@ -33,9 +47,22 @@ def format_price(curr_num, match_num):
         return f'{int(curr_num)}'
 
 def format_time(timestamp):
+
+    '''
+    Format timestmap to ISO
+
+    :param timestamp: datetime obejct to format
+    :return: datetime in ISO format
+    '''
     return timestamp.replace(microsecond=0).isoformat()
 
 def get_iso():
+
+    '''
+    Creates a dict of time ranges for market prices
+
+    :return times_dict: dict of time ranges in required format
+    '''
 
     # Get timestamp
     date_start_0 = datetime.now()

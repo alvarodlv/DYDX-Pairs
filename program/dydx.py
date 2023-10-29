@@ -31,6 +31,11 @@ class DYDX():
 
     def connect_dydx(self):
 
+        '''
+        Establish connection to dYdX platform.
+        :return: dYdX client
+        '''
+
         # Log
         self.logger.info(f'[START] Initiating connection to dydX.')
 
@@ -59,6 +64,13 @@ class DYDX():
     
     def account_info(self, client):
 
+        '''
+        Retrieve account informatiion.
+
+        :param client: dYdX client
+        :return account: dict containing account information
+        '''
+
         # Log
         self.logger.info(f'[START] Retrieving account information.')
 
@@ -74,6 +86,18 @@ class DYDX():
         return account
     
     def place_market_order(self, client, market, side, size, price, reduce_only):
+
+        '''
+        Place market order.
+
+        :param client: dYdX client
+        :param market: crypto pair
+        :param side: 'BUY' or 'SELL'
+        :param size: quantity of order
+        :param price: max/min price of order. If buy, higher; if sell, lower
+        :reduce_only: if True, will net with current positions
+        :return placed_order.data: dict of order results
+        '''
 
         # Log
         self.logger.info(f'[START] Placing market order for {market} at quantity {size}.')
@@ -118,6 +142,17 @@ class DYDX():
     
     def abort_all_positions(self, client):
 
+        '''
+        Aborts all positions. 
+        1. Find tickSize for all pairs
+        2. Get all positons in account
+        3. Handle open positions
+        4. Places inverse positions to orders in account
+
+        :param client: dYdX client
+        :return close_orders: list of dicts for all inverse positions
+        '''
+
         # Log
         self.logger.info(f'[START] Aborting all open positions.')
 
@@ -160,6 +195,13 @@ class DYDX():
         return close_orders
     
     def construct_market_prices(self, client):
+
+        '''
+        Construct dataframe of market prices.
+
+        :param client: dYdX client
+        :return : dataframe 
+        '''
 
         # Log
         self.logger.info(f'[START] Constructing market prices.')
