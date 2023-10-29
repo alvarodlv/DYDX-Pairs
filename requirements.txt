@@ -30,8 +30,10 @@ multiaddr==0.0.9
 multidict==6.0.4
 netaddr==0.9.0
 numpy==1.26.1
+packaging==23.2
 pandas==2.1.2
 parsimonious==0.8.1
+patsy==0.5.3
 protobuf==3.19.5
 pycryptodome==3.19.0
 python-dateutil==2.8.2
@@ -42,7 +44,9 @@ regex==2023.10.3
 requests==2.31.0
 rlp==2.0.1
 rpds-py==0.10.6
+scipy==1.11.3
 six==1.16.0
+statsmodels==0.14.0
 sympy==1.6
 toolz==0.12.0
 tzdata==2023.3
