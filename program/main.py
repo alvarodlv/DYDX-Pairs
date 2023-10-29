@@ -13,3 +13,4 @@ if __name__ == '__main__':
     # Abort all open positions
     if ABORT_ALL_POSITIONS:
         close_orders = dYdX.abort_all_positions(client)
+        pprint(close_orders)

@@ -5,7 +5,7 @@ from decouple import config
 from datetime import datetime, timedelta
 from dydx3 import Client
 from web3 import Web3
-from funcs import initiate_logger
+from funcs import initiate_logger, format_price
 from constants import (
     HOST,
     ETHEREUM_ADDRESS,
@@ -135,12 +135,22 @@ class DYDX():
             for position in all_positions:
 
                 # Determine market
-                market = position['Market']
+                market = position['market']
 
                 # Determine side
                 side = 'BUY'
                 if position['side'] == 'LONG':
                     side = 'SELL'
-            
 
-        return 
+                # Get Price
+                price = float(position['entryPrice'])
+                accept_price = price * 1.25 if side == 'BUY' else price * 0.75
+                tick_size = markets['markets'][market]['tickSize']
+                accept_price = format_price(accept_price, tick_size)
+
+                # Place order to close
+                order = self.place_market_order(client, market, side, position['sumOpen'], accept_price, True)
+                close_orders.append(order)
+                time.sleep(.05)
+            
+        return close_orders
