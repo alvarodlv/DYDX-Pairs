@@ -25,7 +25,7 @@ def initiate_logger(file):
 
     return logger
 
-def format_price(curr_num, match_num):
+def format_number(curr_num, match_num):
 
     '''
     Format price to match tickSize of market pair.
