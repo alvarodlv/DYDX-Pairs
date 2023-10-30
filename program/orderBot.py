@@ -26,7 +26,7 @@ class BotAgent(DYDX):
                  ):
         
         # Inheritance
-        super().__init__(self)
+        super().__init__()
 
         # Initialise class vars
         self.client = client
@@ -69,7 +69,7 @@ class BotAgent(DYDX):
         time.sleep(2)
 
         # Check order status
-        order_status = DYDX.check_order_status(self.client, order_id)
+        order_status = DYDX.check_order_status(client=self.client, orderId=order_id)
 
         # Guard: If order canclled, move to next pair
         if order_status == 'CANCELED':
@@ -81,7 +81,7 @@ class BotAgent(DYDX):
         # Guard: If order not filled, wait until order expiration
         if order_status != 'FAILED':
             time.sleep(2)
-            order_status = DYDX.check_order_status(self.client, order_id)
+            order_status = DYDX.check_order_status(client=self.client, orderId=order_id)
 
             # Check if cancelled again
             if order_status == 'CANCELED':
@@ -100,82 +100,82 @@ class BotAgent(DYDX):
             
         return 'live'
                 
-def open_trades(self):
+    def open_trades(self):
 
-    # Log
-    self.logger.info(f'[START] Starting order process.')
-    self.logger.info(f'[ACTION] Placing order for base pair: {self.market_1}.')
+        # Log
+        self.logger.info(f'[START] Starting order process.')
+        self.logger.info(f'[ACTION] Placing order for base pair: {self.market_1}.')
 
-    # Place base order
-    try:
-        base_order = self.place_market_order(self.client, self.market_1, self.base_side, self.base_size, self.base_price, False)
+        # Place base order
+        try:                                   
+            base_order = self.place_market_order(self.client, self.market_1, self.base_side, self.base_size, self.base_price, False)
 
-        # Store order ID
-        self.order_dict['order_id_m1'] = base_order['order']['id']
-        self.order_dict['order_time_m1'] = datetime.now().isoformat()
-
-    except Exception as e:
-        self.order_dict['pair_status'] = 'ERROR'
-        self.order_dict['comments'] = f'Market 1 {self.market_1}: {e}'
-        self.logger.info(f'[EXCEPTION] Market 1 {self.market_1}: {e}')
-        return self.order_dict
-    
-    # Ensure order is live before processing
-    order_status_m1 = self.check_order_status_by_id(self.order_dict['order_id_m1'])
-
-    # Abort if order unfilled
-    if order_status_m1 != 'live':
-        self.order_dict['pair_status'] = 'ERROR'
-        self.order_dict['comments'] = f'Market 1 {self.market_1} failed to fill.'
-        return self.order_dict
-    
-    # Log
-    self.logger.info(f'[ACTION] Placing order for quote pair: {self.market_2}.')
-
-    # Place quote order
-    try:
-        quote_order = self.place_market_order(self.client, self.market_2, self.quote_side, self.quote_size, self.quote_price, False)
-
-        # Store order ID
-        self.order_dict['order_id_m2'] = quote_order['order']['id']
-        self.order_dict['order_time_m2'] = datetime.now().isoformat()
-
-    except Exception as e:
-        self.order_dict['pair_status'] = 'ERROR'
-        self.order_dict['comments'] = f'Market 2 {self.market_2}: {e}'
-        self.logger.info(f'[EXCEPTION] Market 2 {self.market_2}: {e}')
-        return self.order_dict
-    
-     # Ensure order is live before processing
-    order_status_m2 = self.check_order_status_by_id(self.order_dict['order_id_m2'])
-
-    # Abort if order filled
-    if order_status_m2 != 'live':
-        self.order_dict['pair_status'] = 'ERROR'
-        self.order_dict['comments'] = f'Market 2 {self.market_2} failed to fill.'
-    
-        # Close order 1
-        try:
-            close_order = self.place_market_order(self.client, self.market_1, self.quote_side, self.base_size, self.accept_failsafe_base_price, True)
-
-            # Ensure order is live before proceeding
-            time.sleep(5)
-            order_status_close_order = self.check_order_status(self.client, close_order['order']['id'])
-            if order_status_close_order != 'FILLED':
-                self.log.exception(f'[ERROR] Abort program. Unable to close base position with failsafe.')
-                exit(1)
+            # Store order ID
+            self.order_dict['order_id_m1'] = base_order['order']['id']
+            self.order_dict['order_time_m1'] = datetime.now().isoformat()
 
         except Exception as e:
             self.order_dict['pair_status'] = 'ERROR'
-            self.order_dict['comments'] = f'Close Market 2 {self.market_2}: {e}'
-            self.logger.info(f'[EXCEPTION] Close Market 1 {self.market_1}: {e}')
-            self.log.exception(f'[ERROR] Abort program. Unable to close base position with failsafe.')
-            exit(1)
+            self.order_dict['comments'] = f'Market 1 {self.market_1}: {e}'
+            self.logger.info(f'[EXCEPTION] Market 1 {self.market_1}: {e}')
+            return self.order_dict
+        
+        # Ensure order is live before processing
+        order_status_m1 = self.check_order_status_by_id(self.order_dict['order_id_m1'])
 
-    else:
-        self.order_dict['pair_status'] = 'LIVE'
+        # Abort if order unfilled
+        if order_status_m1 != 'live':
+            self.order_dict['pair_status'] = 'ERROR'
+            self.order_dict['comments'] = f'Market 1 {self.market_1} failed to fill.'
+            return self.order_dict
+        
+        # Log
+        self.logger.info(f'[ACTION] Placing order for quote pair: {self.market_2}.')
 
-    return self.order_dict
+        # Place quote order
+        try:
+            quote_order = self.place_market_order(self.client, self.market_2, self.quote_side, self.quote_size, self.quote_price, False)
+
+            # Store order ID
+            self.order_dict['order_id_m2'] = quote_order['order']['id']
+            self.order_dict['order_time_m2'] = datetime.now().isoformat()
+
+        except Exception as e:
+            self.order_dict['pair_status'] = 'ERROR'
+            self.order_dict['comments'] = f'Market 2 {self.market_2}: {e}'
+            self.logger.info(f'[EXCEPTION] Market 2 {self.market_2}: {e}')
+            return self.order_dict
+        
+        # Ensure order is live before processing
+        order_status_m2 = self.check_order_status_by_id(self.order_dict['order_id_m2'])
+
+        # Abort if order filled
+        if order_status_m2 != 'live':
+            self.order_dict['pair_status'] = 'ERROR'
+            self.order_dict['comments'] = f'Market 2 {self.market_2} failed to fill.'
+        
+            # Close order 1
+            try:
+                close_order = self.place_market_order(self.client, self.market_1, self.quote_side, self.base_size, self.accept_failsafe_base_price, True)
+
+                # Ensure order is live before proceeding
+                time.sleep(5)
+                order_status_close_order = self.check_order_status(client=self.client, orderId=close_order['order']['id'])
+                if order_status_close_order != 'FILLED':
+                    self.log.exception(f'[ERROR] Abort program. Unable to close base position with failsafe.')
+                    exit(1)
+
+            except Exception as e:
+                self.order_dict['pair_status'] = 'ERROR'
+                self.order_dict['comments'] = f'Close Market 2 {self.market_2}: {e}'
+                self.logger.info(f'[EXCEPTION] Close Market 1 {self.market_1}: {e}')
+                self.log.exception(f'[ERROR] Abort program. Unable to close base position with failsafe.')
+                exit(1)
+
+        else:
+            self.order_dict['pair_status'] = 'LIVE'
+
+        return self.order_dict
 
 
 

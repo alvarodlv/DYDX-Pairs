@@ -9,7 +9,7 @@ from pprint import pprint
 from datetime import datetime, timedelta
 from dydx3 import Client
 from web3 import Web3
-from funcs import initiate_logger, format_price, get_iso
+from funcs import initiate_logger, format_number, get_iso
 from cointegrated_pairs import calc_z_score
 from constants import (
     HOST,
@@ -80,13 +80,14 @@ class DYDX():
         # Retrieve account info
         try:
             account = client.private.get_account()
-            self.logger.info(f'[COMPLETE] Account information retrieved.')
+            free_collateral = account.data['account']['freeCollateral']
+            self.logger.info(f'[COMPLETE] Account information retrieved. Free collateral: {free_collateral}')
 
         except:
             self.logger.exception(f'[ERROR] Failed to retrieve account information.')
             exit(1)
 
-        return account
+        return account, float(free_collateral)
     
     def place_market_order(self, client, market, side, size, price, reduce_only):
         '''
@@ -107,7 +108,7 @@ class DYDX():
 
         # Get Position ID
         try:
-            account = self.account_info(client)
+            account, _ = self.account_info(client)
             position_id = account.data['account']['positionId']
             self.logger.info(f'[COMPLETE] Retrieved acocunt position ID.')
         
@@ -186,7 +187,7 @@ class DYDX():
                 price = float(position['entryPrice'])
                 accept_price = price * 1.25 if side == 'BUY' else price * 0.75
                 tick_size = markets['markets'][market]['tickSize']
-                accept_price = format_price(accept_price, tick_size)
+                accept_price = format_number(accept_price, tick_size)
 
                 # Place order to close
                 order = self.place_market_order(client, market, side, position['sumOpen'], accept_price, True)
@@ -289,7 +290,11 @@ class DYDX():
 
         order = client.private.get_order_by_id(orderId)
 
-        return order.data['order']['status']
+        if order.data:
+            if 'order' in order.data.keys():
+                return order.data['order']['status']
+        
+        return 'FAILED'
     
     def get_recent_candles(self, client, market):
         '''
@@ -317,7 +322,7 @@ class DYDX():
 
         return prices_result
 
-    def is_open_postions(client, market):
+    def is_open_positions(self, client, market):
         '''
         
         '''
@@ -335,16 +340,3 @@ class DYDX():
             return True
         else:
             return False
-    
-    def open_positions(self, client):
-        '''
-        FINISH!
-        '''
-
-        # Load coint pairs
-        df = pd.read_csv('coint_pairs.csv')
-
-        print(df)
-
-        return
-
