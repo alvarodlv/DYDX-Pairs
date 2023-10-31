@@ -1,10 +1,12 @@
 import time
+import logging
 
 from dydx import DYDX
 from datetime import datetime, timedelta
+from funcs import initiate_logger
 from pprint import pprint
 
-class BotAgent(DYDX):
+class BotAgent():
     '''
     Class to cover managing and chekcing trades
     '''
@@ -25,8 +27,8 @@ class BotAgent(DYDX):
                  hedge_ratio
                  ):
         
-        # Inheritance
-        super().__init__()
+        # Set logger
+        self.logger = logging.getLogger('logging/api_log.log')
 
         # Initialise class vars
         self.client = client
@@ -65,15 +67,15 @@ class BotAgent(DYDX):
     def check_order_status_by_id(self, order_id):
 
         # Logs
-        self.logger.info(f'[START] Checking order status by id: {order_id}')
+        self.logger.info(f'[CHECK_ORDER_BY_ID] - [START] Checking order status by id: {order_id}')
         time.sleep(2)
 
         # Check order status
-        order_status = DYDX.check_order_status(client=self.client, orderId=order_id)
+        order_status = DYDX().check_order_status(client=self.client, orderId=order_id)
 
         # Guard: If order canclled, move to next pair
         if order_status == 'CANCELED':
-            self.logger.info(f'[CONFRIMED] {self.market_1} vs {self.market_2} - Order Cancelled.')
+            self.logger.info(f'[CHECK_ORDER_BY_ID] - [CONFRIMED] {self.market_1} vs {self.market_2} - Order Cancelled.')
             self.order_dict['pair_status'] == 'FAILED'
 
             return 'failed'
@@ -81,11 +83,11 @@ class BotAgent(DYDX):
         # Guard: If order not filled, wait until order expiration
         if order_status != 'FAILED':
             time.sleep(2)
-            order_status = DYDX.check_order_status(client=self.client, orderId=order_id)
+            order_status = DYDX().check_order_status(client=self.client, orderId=order_id)
 
             # Check if cancelled again
             if order_status == 'CANCELED':
-                self.logger.info(f'[CONFRIMED] {self.market_1} vs {self.market_2} - Order Cancelled.')
+                self.logger.info(f'[CHECK_ORDER_BY_ID] - [CONFRIMED] {self.market_1} vs {self.market_2} - Order Cancelled.')
                 self.order_dict['pair_status'] == 'FAILED'
 
                 return 'failed'
@@ -94,7 +96,7 @@ class BotAgent(DYDX):
             if order_status != 'FILLED':
                 self.client.private.cancel_order(order_id=order_id)
                 self.order_dict['pair_status'] == 'ERROR'
-                self.logger.info(f'[EXCEPTION] {self.market_1} vs {self.market_2} - Order Error.')
+                self.logger.info(f'[CHECK_ORDER_BY_ID] - [EXCEPTION] {self.market_1} vs {self.market_2} - Order Error.')
 
                 return 'error'
             
@@ -103,12 +105,12 @@ class BotAgent(DYDX):
     def open_trades(self):
 
         # Log
-        self.logger.info(f'[START] Starting order process.')
-        self.logger.info(f'[ACTION] Placing order for base pair: {self.market_1}.')
+        self.logger.info(f'[OPEN_TRADE] - [START] Starting order process.')
+        self.logger.info(f'[OPEN_TRADE] - [ACTION] Placing order for base pair: {self.market_1}.')
 
         # Place base order
         try:                                   
-            base_order = self.place_market_order(self.client, self.market_1, self.base_side, self.base_size, self.base_price, False)
+            base_order = DYDX().place_market_order(self.client, self.market_1, self.base_side, self.base_size, self.base_price, False)
 
             # Store order ID
             self.order_dict['order_id_m1'] = base_order['order']['id']
@@ -117,7 +119,7 @@ class BotAgent(DYDX):
         except Exception as e:
             self.order_dict['pair_status'] = 'ERROR'
             self.order_dict['comments'] = f'Market 1 {self.market_1}: {e}'
-            self.logger.info(f'[EXCEPTION] Market 1 {self.market_1}: {e}')
+            self.logger.info(f'[OPEN_TRADE] - [EXCEPTION] Market 1 {self.market_1}: {e}')
             return self.order_dict
         
         # Ensure order is live before processing
@@ -130,11 +132,11 @@ class BotAgent(DYDX):
             return self.order_dict
         
         # Log
-        self.logger.info(f'[ACTION] Placing order for quote pair: {self.market_2}.')
+        self.logger.info(f'[OPEN_TRADE] - [ACTION] Placing order for quote pair: {self.market_2}.')
 
         # Place quote order
         try:
-            quote_order = self.place_market_order(self.client, self.market_2, self.quote_side, self.quote_size, self.quote_price, False)
+            quote_order = DYDX().place_market_order(self.client, self.market_2, self.quote_side, self.quote_size, self.quote_price, False)
 
             # Store order ID
             self.order_dict['order_id_m2'] = quote_order['order']['id']
@@ -143,7 +145,7 @@ class BotAgent(DYDX):
         except Exception as e:
             self.order_dict['pair_status'] = 'ERROR'
             self.order_dict['comments'] = f'Market 2 {self.market_2}: {e}'
-            self.logger.info(f'[EXCEPTION] Market 2 {self.market_2}: {e}')
+            self.logger.info(f'[OPEN_TRADE] - [EXCEPTION] Market 2 {self.market_2}: {e}')
             return self.order_dict
         
         # Ensure order is live before processing
@@ -156,20 +158,20 @@ class BotAgent(DYDX):
         
             # Close order 1
             try:
-                close_order = self.place_market_order(self.client, self.market_1, self.quote_side, self.base_size, self.accept_failsafe_base_price, True)
+                close_order = DYDX().place_market_order(self.client, self.market_1, self.quote_side, self.base_size, self.accept_failsafe_base_price, True)
 
                 # Ensure order is live before proceeding
                 time.sleep(5)
-                order_status_close_order = self.check_order_status(client=self.client, orderId=close_order['order']['id'])
+                order_status_close_order = DYDX().check_order_status(client=self.client, orderId=close_order['order']['id'])
                 if order_status_close_order != 'FILLED':
-                    self.log.exception(f'[ERROR] Abort program. Unable to close base position with failsafe.')
+                    self.log.exception(f'[OPEN_TRADE] - [ERROR] Abort program. Unable to close base position with failsafe.')
                     exit(1)
 
             except Exception as e:
                 self.order_dict['pair_status'] = 'ERROR'
                 self.order_dict['comments'] = f'Close Market 2 {self.market_2}: {e}'
-                self.logger.info(f'[EXCEPTION] Close Market 1 {self.market_1}: {e}')
-                self.log.exception(f'[ERROR] Abort program. Unable to close base position with failsafe.')
+                self.logger.info(f'[OPEN_TRADE] - [ERROR] Close Market 1 {self.market_1}: {e}')
+                self.log.exception(f'[OPEN_TRADE] - [ERROR] Abort program. Unable to close base position with failsafe.')
                 exit(1)
 
         else:
