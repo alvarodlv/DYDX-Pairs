@@ -9,7 +9,7 @@ from pprint import pprint
 from datetime import datetime, timedelta
 from dydx3 import Client
 from web3 import Web3
-from funcs import initiate_logger, format_number, get_iso
+from funcs import format_number, get_iso, initiate_logger
 from cointegrated_pairs import calc_z_score
 from constants import (
     HOST,
@@ -29,9 +29,7 @@ from constants import (
 class DYDX():
 
     def __init__(self):
-        logging.basicConfig(level=logging.DEBUG, filename='logging/api_log.log', format='%(asctime)s - %(levelname)s - %(message)s', filemode='w')
         self.logger = initiate_logger('logging/api_log.log')
-
         return
 
     def connect_dydx(self):
@@ -41,7 +39,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[START] Initiating connection to dydX.')
+        self.logger.info(f'[CONNECTION] - [START] Initiating connection to dydX.')
 
         # Initiate Connection
         try:
@@ -58,10 +56,10 @@ class DYDX():
             web3=Web3(Web3.HTTPProvider(HTTP_PROVIDER))
             )
 
-            self.logger.info(f'[COMPLETE] Connection to dYdX established.')
+            self.logger.info(f'[CONNECTION] - [COMPLETE] Connection to dYdX established.')
 
         except:
-            self.logger.exception(f'[ERROR] Failed to establish connection to dYdX.')
+            self.logger.exception(f'[CONNECTION] - [ERROR] Failed to establish connection to dYdX.')
             exit(1)
 
         return client
@@ -74,17 +72,14 @@ class DYDX():
         :return account: dict containing account information
         '''
 
-        # Log
-        self.logger.info(f'[START] Retrieving account information.')
-
         # Retrieve account info
         try:
             account = client.private.get_account()
             free_collateral = account.data['account']['freeCollateral']
-            self.logger.info(f'[COMPLETE] Account information retrieved. Free collateral: {free_collateral}')
+            self.logger.info(f'[ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: {free_collateral}')
 
         except:
-            self.logger.exception(f'[ERROR] Failed to retrieve account information.')
+            self.logger.exception(f'[ACCOUNT_INFO] - [ERROR] Failed to retrieve account information.')
             exit(1)
 
         return account, float(free_collateral)
@@ -103,17 +98,17 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[START] Placing market order for. Market: {market}; Side: {side}; Size: {size}; Price: {price}.')
+        self.logger.info(f'[PLACE_MARKET_ORDER] - [START] Placing market order for. Market: {market}; Side: {side}; Size: {size}; Price: {price}.')
 
 
         # Get Position ID
         try:
             account, _ = self.account_info(client)
             position_id = account.data['account']['positionId']
-            self.logger.info(f'[COMPLETE] Retrieved acocunt position ID.')
+            self.logger.info(f'[PLACE_MARKET_ORDER] - [ACTION] Retrieved account position ID.')
         
         except:
-            self.logger.exception(f'[ERROR] Failed to retrieve account position ID.')
+            self.logger.exception(f'[PLACE_MARKET_ORDER] - [ERROR] Failed to retrieve account position ID.')
             exit(1)
 
         # Get Expiration Time
@@ -135,10 +130,10 @@ class DYDX():
                 time_in_force='FOK', # Fill or Kill
                 reduce_only=reduce_only # If True - will net with previous orders
                 )
-            self.logger.info(f'[COMPLETE] Retrieved acocunt position ID.')
+            self.logger.info(f'[PLACE_MARKET_ORDER] - [COMPLETE] Placed order.')
 
         except:
-            self.logger.exception(f'[ERROR] Failed to place order.')
+            self.logger.exception(f'[PLACE_MARKET_ORDER] - [ERROR] Failed to place order.')
             exit(1)
 
         return placed_order.data
@@ -156,7 +151,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[START] Aborting all open positions.')
+        self.logger.info(f'[ABORT_OPEN_POSITIONS] - [START] Aborting all open positions.')
 
         # Cancel all orders
         client.private.cancel_all_orders()
@@ -190,13 +185,31 @@ class DYDX():
                 accept_price = format_number(accept_price, tick_size)
 
                 # Place order to close
-                order = self.place_market_order(client, market, side, position['sumOpen'], accept_price, True)
-                close_orders.append(order)
-                time.sleep(.05)
+                try:
+                    order = self.place_market_order(client, market, side, position['sumOpen'], accept_price, True)
+                    close_orders.append(order)
+                    time.sleep(.2)
+                    self.logger.info(f'[ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.')
+                
+                except:
+                    self.logger.exception(f'[ABORT_OPEN_POSITIONS] - [ERROR] Unable to abort all positions.')
+
+        else:
+            self.logger.info('[ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Emtpy portfolio.')
             
         return close_orders
     
     def get_hist_candles(self, client, market):
+        '''
+        Get historical candles 
+
+        :param client: dYdX client
+        :param market: Market pair
+        :return close_prices: dict if close prices for market pair
+        '''
+
+        # Log
+        self.logger.info(f'[GET_HIST_CANDLES] - [START] Sourcing close prices for market pair: {market}')
 
         # Define output
         close_prices = []
@@ -211,13 +224,16 @@ class DYDX():
             to_iso = tf_obj['to_iso']
 
             # Get data
-            candles = client.public.get_candles(
-                market=market,
-                resolution=RESOLUTION,
-                from_iso=from_iso,
-                to_iso=to_iso,
-                limit=100
-            )
+            try:
+                candles = client.public.get_candles(
+                    market=market,
+                    resolution=RESOLUTION,
+                    from_iso=from_iso,
+                    to_iso=to_iso,
+                    limit=100
+                )
+            except:
+                self.logger.exception(f'[GET_HIST_CANDLES] - [ERROR] Unable to source historical candles for market pair: {market}')
 
             # Structure data
             for candle in candles.data['candles']:
@@ -225,9 +241,9 @@ class DYDX():
 
             # Construct dict
             close_prices.reverse()
+            self.logger.info(f'[GET_HIST_CANDLES] - [COMPLETE] Close prices for market pair {market} saved.')
 
         return close_prices
-
 
     
     def construct_market_prices(self, client):
@@ -239,7 +255,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[START] Constructing market prices.')
+        self.logger.info(f'[MARKET_PRICES] - [START] Constructing market prices.')
         start = timer()
 
         # Define variables
@@ -247,7 +263,7 @@ class DYDX():
         markets = client.public.get_markets()
 
         # Find tradeable pairs
-        self.logger.info(f'[ACTION] Finding tradeable market pairs.')
+        self.logger.info(f'[MARKET_PRICES] - [ACTION] Finding tradeable market pairs.')
         for market in markets.data['markets'].keys():
             market_info = markets.data['markets'][market]
             if market_info['status'] == 'ONLINE' and market_info['type'] == 'PERPETUAL':
@@ -259,7 +275,7 @@ class DYDX():
         df.set_index('datetime', inplace=True)
 
         # Append other prices to df
-        self.logger.info(f'[ACTION] Constructing market prices dataframe.')
+        self.logger.info(f'[MARKET_PRICES] - [ACTION] Constructing market prices dataframe.')
         for market in tradeable_markets[1:]:
             close_prices_add = self.get_hist_candles(client, market)
             df_add = pd.DataFrame(close_prices_add)
@@ -270,11 +286,11 @@ class DYDX():
         # Check any cols with Nan
         nans = df.columns[df.isna().any()].tolist()
         if len(nans) > 0:
-            self.logger.info(f'[ACTION] Dropping following market pairs with Nans: {nans}.')
+            self.logger.info(f'[MARKET_PRICES] - [ACTION] Dropping following market pairs with Nans: {nans}.')
             df.drop(columns=nans, inplace=True)
         
         end = timer()
-        self.logger.info(f'[COMPLETE] Market prices stored in dataframe. {round((end-start)/60,2)} mins')
+        self.logger.info(f'[MARKET_PRICES] - [COMPLETE] Market prices stored in dataframe. {round((end-start)/60,2)} mins')
 
         return df
     
@@ -284,21 +300,27 @@ class DYDX():
 
         :param client: dYdX client
         :param orderId: Order identifier.
-
         :return status: Status of order queried
         '''
 
+        # Get order by id
         order = client.private.get_order_by_id(orderId)
 
         if order.data:
             if 'order' in order.data.keys():
                 return order.data['order']['status']
         
+        self.logger.info(f'[CHECK_ORDER_STATUS] - [ERROR] Unable to check status of order: {orderId}')
+        
         return 'FAILED'
     
     def get_recent_candles(self, client, market):
         '''
-        
+        Retrieve recent candle for market pair 
+
+        :param client: dYdX client
+        :param market: Market pair
+        :return prices_result: Array of prices
         '''
 
         # Initialise array
@@ -306,11 +328,15 @@ class DYDX():
         time.sleep(0.2)
 
         # Get candles
-        candles = client.public.get_candles(
-            market=market,
-            resolution=RESOLUTION,
-            limit=100
-        )
+        try:
+            candles = client.public.get_candles(
+                market=market,
+                resolution=RESOLUTION,
+                limit=100
+            )
+
+        except:
+            self.logger.exception(f'[GET_RECENT_CANDLES] - [ERROR] Unable to source recent candles for market pair: {market}')
 
         # Structure data
         for candle in candles.data['candles']:
@@ -324,7 +350,11 @@ class DYDX():
 
     def is_open_positions(self, client, market):
         '''
-        
+        Check if there are any open position for prospective trade.
+
+        :param client: dYdX client
+        :param market: Market pair
+        :return boolean: True or False if exists
         '''
 
         time.sleep(0.2)

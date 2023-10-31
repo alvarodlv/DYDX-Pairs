@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 
-from funcs import format_number
+from funcs import format_number, initiate_logger
 from constants import ZSCORE_THRESH, USD_PER_TRADE, USD_MIN_COLLATERAL
 from cointegrated_pairs import calc_z_score
 from dydx import DYDX
@@ -10,8 +10,8 @@ from orderBot import BotAgent
 
 def open_position(client):
 
-    # Initialise dYdX
-    dYdX = DYDX()
+    # Initialise logger
+    logger = initiate_logger('logging/api_log.log')
 
     # Read in coint pairs
     df = pd.read_csv('coint_pairs.csv')
@@ -21,6 +21,9 @@ def open_position(client):
 
     # Initialise container for BotAgent results
     bot_agents = []
+
+    # Log
+    logger.info(f'[OPEN_POSITION] - [START] Beginning process of opening orders.')
 
     # Find z-score trigger
     for index, row in df.iterrows():
@@ -32,8 +35,8 @@ def open_position(client):
         half_life = row['half_life']
     
         # Get prices
-        series_1 = dYdX.get_recent_candles(client, base_market)
-        series_2 = dYdX.get_recent_candles(client, quote_market)
+        series_1 = DYDX().get_recent_candles(client, base_market)
+        series_2 = DYDX().get_recent_candles(client, quote_market)
 
         # Get z-score
         if len(series_1) > 0 and len(series_1) == len(series_2):
@@ -44,8 +47,8 @@ def open_position(client):
             if abs(z_score) >= ZSCORE_THRESH:
 
                 # Ensure not already open
-                is_base_open = dYdX.is_open_positions(client, base_market)
-                is_quote_open = dYdX.is_open_positions(client, quote_market)
+                is_base_open = DYDX().is_open_positions(client, base_market)
+                is_quote_open = DYDX().is_open_positions(client, quote_market)
 
                 # Place Trade
                 if not is_base_open and not is_quote_open:
@@ -91,12 +94,9 @@ def open_position(client):
                     # # if checks pass, place trade
                     if not check_base and not check_quote:
                         continue
-                    '''
-                    FIX DUPLICATE ACCOUNT RETRIEVAL
-                    '''
 
                     # Check account balance
-                    #_, free_collateral = dYdX.account_info(client)
+                    #_, free_collateral = DYDX().account_info(client)
                     account = client.private.get_account()
                     free_collateral = float(account.data['account']['freeCollateral'])
                     print(f'Balance: {free_collateral} and minimum at: {USD_MIN_COLLATERAL}')
@@ -126,7 +126,7 @@ def open_position(client):
                     # Open trades
                     bot_open_dict = bot_agent.open_trades()
 
-                    # Handle succes sin opening trades
+                    # Handle success in opening trades
                     if bot_open_dict['pair_status'] == 'LIVE':
 
                         # Append to list of bot agents
@@ -135,8 +135,12 @@ def open_position(client):
 
     # Save agents
     if len(bot_agents) > 0:
+        logger.info(f'[OPEN_POSITION] - [COMPLETE] Successfully opened {len(bot_agents)} positions.')
         with open('bot_agents.json','w') as f:
             json.dump(bot_agents, f)
+    
+    else:
+        logger.exception(f'[OPEN_POSITION] - [COMPLETE] Did not open any positions.')
                         
 
     return

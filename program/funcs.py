@@ -10,20 +10,31 @@ def initiate_logger(file):
     :param file: name of log file to initiate
     :return logger: logger object
     '''
-    logger = logging.getLogger(__name__)
-    logging.getLogger().setLevel(logging.DEBUG)
 
-    handler = logging.FileHandler(file)
-    file_handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    
-    file_handler.setFormatter(formatter)
-    handler.setFormatter(formatter)
+    # Get or create logger
+    logger = logging.getLogger(file)
 
-    logger.addHandler(file_handler)
-    logger.addHandler(handler)
+    if not logger.hasHandlers():
+        # Set log level
+        logging.getLogger().setLevel(logging.DEBUG)
+
+        # Set handlers
+        file_handler = logging.FileHandler(file)
+        stream_handler = logging.StreamHandler()
+
+        # Set formatter
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        
+        # Apply formatter
+        file_handler.setFormatter(formatter)
+        stream_handler.setFormatter(formatter)
+
+        # Add handlers
+        logger.addHandler(file_handler)
+        logger.addHandler(stream_handler)
 
     return logger
+    
 
 def format_number(curr_num, match_num):
 

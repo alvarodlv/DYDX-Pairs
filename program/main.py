@@ -1,12 +1,11 @@
 from dydx import DYDX
 from pprint import pprint
+from funcs import initiate_logger
 from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS, PLACE_TRADES
 from entry import open_position
 from cointegrated_pairs import (
-    calc_half_life, 
-    calc_z_score, 
-    calc_coint, 
     store_coint_results)
+
 
 if __name__ == '__main__':
     
