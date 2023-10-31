@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 
-from funcs import format_number, initiate_logger
+from funcs import format_number, initiate_logger, format_step
 from constants import ZSCORE_THRESH, USD_PER_TRADE, USD_MIN_COLLATERAL
 from cointegrated_pairs import calc_z_score
 from dydx import DYDX
@@ -82,8 +82,8 @@ def open_position(client):
                     quote_step_size = markets['markets'][quote_market]['stepSize']
 
                     # Format sizes
-                    base_size = format_number(base_quantity, base_step_size)
-                    quote_size = format_number(quote_quantity, quote_step_size)
+                    base_size = format_number(format_step(base_quantity, base_step_size),base_step_size)
+                    quote_size = format_number(format_step(quote_quantity, quote_step_size),quote_step_size)
 
                     # Ensure size
                     base_min_order_size = markets['markets'][base_market]['minOrderSize']

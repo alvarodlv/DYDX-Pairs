@@ -100,6 +100,8 @@ class BotAgent():
 
                 return 'error'
             
+        self.logger.info(f'[CHECK_ORDER_BY_ID] - [COMPLETE] Order filled.')
+            
         return 'live'
                 
     def open_trades(self):

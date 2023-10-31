@@ -105,7 +105,6 @@ class DYDX():
         try:
             account, _ = self.account_info(client)
             position_id = account.data['account']['positionId']
-            self.logger.info(f'[PLACE_MARKET_ORDER] - [ACTION] Retrieved account position ID.')
         
         except:
             self.logger.exception(f'[PLACE_MARKET_ORDER] - [ERROR] Failed to retrieve account position ID.')
@@ -195,7 +194,7 @@ class DYDX():
                     self.logger.exception(f'[ABORT_OPEN_POSITIONS] - [ERROR] Unable to abort all positions.')
 
         else:
-            self.logger.info('[ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Emtpy portfolio.')
+            self.logger.info('[ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Empty portfolio.')
             
         return close_orders
     
@@ -207,9 +206,6 @@ class DYDX():
         :param market: Market pair
         :return close_prices: dict if close prices for market pair
         '''
-
-        # Log
-        self.logger.info(f'[GET_HIST_CANDLES] - [START] Sourcing close prices for market pair: {market}')
 
         # Define output
         close_prices = []
@@ -241,7 +237,9 @@ class DYDX():
 
             # Construct dict
             close_prices.reverse()
-            self.logger.info(f'[GET_HIST_CANDLES] - [COMPLETE] Close prices for market pair {market} saved.')
+        
+        # Log
+        self.logger.info(f'[GET_HIST_CANDLES] - [COMPLETE] Close prices for market pair {market} saved.')
 
         return close_prices
 
@@ -275,7 +273,6 @@ class DYDX():
         df.set_index('datetime', inplace=True)
 
         # Append other prices to df
-        self.logger.info(f'[MARKET_PRICES] - [ACTION] Constructing market prices dataframe.')
         for market in tradeable_markets[1:]:
             close_prices_add = self.get_hist_candles(client, market)
             df_add = pd.DataFrame(close_prices_add)

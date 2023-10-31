@@ -3,7 +3,6 @@ import logging
 from datetime import datetime, timedelta
 
 def initiate_logger(file):
-
     '''
     Initiates logging.
 
@@ -37,7 +36,6 @@ def initiate_logger(file):
     
 
 def format_number(curr_num, match_num):
-
     '''
     Format price to match tickSize of market pair.
 
@@ -58,7 +56,6 @@ def format_number(curr_num, match_num):
         return f'{int(curr_num)}'
 
 def format_time(timestamp):
-
     '''
     Format timestmap to ISO
 
@@ -68,7 +65,6 @@ def format_time(timestamp):
     return timestamp.replace(microsecond=0).isoformat()
 
 def get_iso():
-
     '''
     Creates a dict of time ranges for market prices
 
@@ -104,3 +100,9 @@ def get_iso():
 
     return times_dict
 
+def format_step(size, step):
+    '''
+    Format trade quantity to match step size
+    '''
+    
+    return round(float(size)/float(step))*float(size)
