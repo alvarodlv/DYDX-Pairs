@@ -13,6 +13,9 @@ FIND_CONIT_PARIS = False
 # Place trades
 PLACE_TRADES = False
 
+# Manage exists
+MANAGE_EXITS = False
+
 # Resolution
 RESOLUTION = '1HOUR'
 
