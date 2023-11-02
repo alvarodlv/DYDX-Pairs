@@ -137,7 +137,7 @@ def open_position(client):
     if len(bot_agents) > 0:
         logger.info(f'[OPEN_POSITION] - [COMPLETE] Successfully opened {len(bot_agents)} positions.')
         with open('bot_agents.json','w') as f:
-            json.dump(bot_agents, f)
+            json.dump(bot_agents, f, indent=4)
     
     else:
         logger.exception(f'[OPEN_POSITION] - [COMPLETE] Did not open any positions.')

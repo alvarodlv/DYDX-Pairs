@@ -101,7 +101,7 @@ def store_coint_results(df_market_prices):
     criteria_met_pairs = []
 
     # Find cointegrated pairs
-    for index, base in enumerate(markets[:-1]):
+    for index, base in enumerate(markets[-10:-1]):
         series_1 = df_market_prices[base].values.astype(float).tolist()
 
         # Get quote pair
@@ -109,7 +109,11 @@ def store_coint_results(df_market_prices):
             series_2 = df_market_prices[quote].values.astype(float).tolist()
 
             # Check coint
-            coint_flag, hedge_ratio, half_life = calc_coint(series_1, series_2)
+            try:
+                coint_flag, hedge_ratio, half_life = calc_coint(series_1, series_2)
+            
+            except:
+                continue
 
             # Save pair
             if coint_flag == 1 and half_life <= MAX_HALF_LIFE and half_life > 0:
