@@ -188,6 +188,15 @@ class DYDX():
                     order = self.place_market_order(client, market, side, position['sumOpen'], accept_price, True)
                     close_orders.append(order)
                     time.sleep(.2)
+
+                    # Ensure order is filled
+                    order_status = self.check_order_status(client, order['order']['id'])
+                    time.sleep(0.5)
+
+                    # Abort if order unfilled
+                    if order_status == 'CANCELED':
+                        self.logger.info(f'[ABORT_OPEN_POSITIONS] - [ERROR] Market {market} failed to abort..')
+        
                     self.logger.info(f'[ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.')
                 
                 except:

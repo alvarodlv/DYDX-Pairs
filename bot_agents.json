@@ -1,1 +1,36 @@
-[]
+[
+    {
+        "market_1": "CRV-USD",
+        "market_2": "XTZ-USD",
+        "hedge_ratio": 0.6601735674931849,
+        "z_score": 1.732284115492605,
+        "half_life": 9.0,
+        "order_id_m1": "45f806d739d9a92bf9efb209596c12ee6a3e3ec39509cca08763e6508e3d31c",
+        "order_m1_size": "94",
+        "order_m1_side": "SELL",
+        "order_time_m1": "2023-11-03T22:31:19.835452",
+        "order_id_m2": "39288b03e6d06fe9609460df1f738d0c8dd4a8bd6381c952ea8cec46b386d95",
+        "order_m2_size": "64",
+        "order_m2_side": "BUY",
+        "order_time_m2": "2023-11-03T22:31:25.873592",
+        "pair_status": "LIVE",
+        "comments": ""
+    },
+    {
+        "market_1": "DOGE-USD",
+        "market_2": "COMP-USD",
+        "hedge_ratio": 0.00147495829415,
+        "z_score": -1.897372619906728,
+        "half_life": 12.0,
+        "order_id_m1": "66bb50d68da97922b8fc264f96ededc185836586b722bddf3957f269d874396",
+        "order_m1_size": "730",
+        "order_m1_side": "BUY",
+        "order_time_m1": "2023-11-03T22:31:45.712715",
+        "order_id_m2": "7c86f56d89d39e26cf1127511ff5c603fe67f024a0ad20daa599d73e9ae9d04",
+        "order_m2_size": "1.06",
+        "order_m2_side": "SELL",
+        "order_time_m2": "2023-11-03T22:31:51.465661",
+        "pair_status": "LIVE",
+        "comments": ""
+    }
+]
