@@ -18,7 +18,7 @@ def initiate_logger(file):
         logging.getLogger().setLevel(logging.DEBUG)
 
         # Set handlers
-        file_handler = logging.FileHandler(file)
+        file_handler = logging.FileHandler(file, mode='w')
         stream_handler = logging.StreamHandler()
 
         # Set formatter
@@ -53,7 +53,8 @@ def format_number(curr_num, match_num):
         return curr_num_str
 
     else:
-        return f'{int(curr_num)}'
+        curr_num_str = int(round(float(curr_num)/float(match_num_str))*float(match_num_str))
+        return f'{curr_num_str}'
 
 def format_time(timestamp):
     '''
@@ -105,4 +106,4 @@ def format_step(size, step):
     Format trade quantity to match step size
     '''
     
-    return round(float(size)/float(step))*float(size)
+    return round(float(size)/float(step))*float(step)

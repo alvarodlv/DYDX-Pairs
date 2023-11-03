@@ -22,8 +22,19 @@ def open_position(client):
     # Initialise container for BotAgent results
     bot_agents = []
 
-    # Log
+    # Open open trade json file
+    try:
+        with open('bot_agents.json') as f:
+            open_positions_file = json.load(f)
+        
+        for p in open_positions_file:
+            bot_agents.append(p)
+    except:
+        bot_agents = []
+
+    # Log & initialise illiquid pairs list
     logger.info(f'[OPEN_POSITION] - [START] Beginning process of opening orders.')
+    illiquid_pairs = []
 
     # Find z-score trigger
     for index, row in df.iterrows():
@@ -39,7 +50,7 @@ def open_position(client):
         series_2 = DYDX().get_recent_candles(client, quote_market)
 
         # Get z-score
-        if len(series_1) > 0 and len(series_1) == len(series_2):
+        if len(series_1) > 0 and len(series_1) == len(series_2) and base_market not in illiquid_pairs and quote_market not in illiquid_pairs:
             spread = series_1 - (hedge_ratio*series_2)
             z_score = calc_z_score(spread).values.tolist()[-1]
 
@@ -82,8 +93,12 @@ def open_position(client):
                     quote_step_size = markets['markets'][quote_market]['stepSize']
 
                     # Format sizes
-                    base_size = format_number(format_step(base_quantity, base_step_size),base_step_size)
-                    quote_size = format_number(format_step(quote_quantity, quote_step_size),quote_step_size)
+                    base_size = format_number(base_quantity, base_step_size)
+                    quote_size = format_number(quote_quantity, quote_step_size)
+
+                    # # Format sizes
+                    # base_size = format_number(format_step(base_quantity, base_step_size),base_step_size)
+                    # quote_size = format_number(format_step(quote_quantity, quote_step_size),quote_step_size)
 
                     # Ensure size
                     base_min_order_size = markets['markets'][base_market]['minOrderSize']
@@ -99,14 +114,13 @@ def open_position(client):
                     #_, free_collateral = DYDX().account_info(client)
                     account = client.private.get_account()
                     free_collateral = float(account.data['account']['freeCollateral'])
-                    print(f'Balance: {free_collateral} and minimum at: {USD_MIN_COLLATERAL}')
-
 
                     # Guard: Ensure collateral
                     if free_collateral < USD_MIN_COLLATERAL:
                         break
 
                     # Create Bot Agent
+                    logger.info(f'[OPEN_POSITION] - [START] Processing orders for {base_market} & {quote_market}.')
                     bot_agent = BotAgent(
                             client,
                             market_1=base_market,
@@ -124,7 +138,10 @@ def open_position(client):
                         )
                     
                     # Open trades
-                    bot_open_dict = bot_agent.open_trades()
+                    bot_open_dict, illiquid = bot_agent.open_trades()
+                    if illiquid not in illiquid_pairs:
+                        illiquid_pairs = illiquid_pairs + illiquid
+                    print(illiquid_pairs)
 
                     # Handle success in opening trades
                     if bot_open_dict['pair_status'] == 'LIVE':

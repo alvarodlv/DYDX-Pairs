@@ -31,6 +31,7 @@ class BotAgent():
         self.logger = logging.getLogger('logging/api_log.log')
 
         # Initialise class vars
+        self.illiquid = []
         self.client = client
         self.market_1 = market_1
         self.market_2 = market_2
@@ -131,6 +132,7 @@ class BotAgent():
         if order_status_m1 != 'live':
             self.order_dict['pair_status'] = 'ERROR'
             self.order_dict['comments'] = f'Market 1 {self.market_1} failed to fill.'
+            self.illiquid.append(self.market_1)
             return self.order_dict
         
         # Log
@@ -156,6 +158,7 @@ class BotAgent():
         # Abort if order filled
         if order_status_m2 != 'live':
             self.order_dict['pair_status'] = 'ERROR'
+            self.illiquid.append(self.market_2)
             self.order_dict['comments'] = f'Market 2 {self.market_2} failed to fill.'
         
             # Close order 1
@@ -179,7 +182,7 @@ class BotAgent():
         else:
             self.order_dict['pair_status'] = 'LIVE'
 
-        return self.order_dict
+        return self.order_dict, self.illiquid
 
 
 
