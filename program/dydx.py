@@ -1,5 +1,5 @@
-import logging
 import time
+import json
 import numpy as np
 import pandas as pd
 
@@ -29,7 +29,7 @@ from constants import (
 class DYDX():
 
     def __init__(self):
-        self.logger = initiate_logger('logging/api_log.log')
+        self.logger = initiate_logger('program/logging/api_log.log')
         return
 
     def connect_dydx(self):
@@ -196,12 +196,16 @@ class DYDX():
                     # Abort if order unfilled
                     if order_status == 'CANCELED':
                         self.logger.info(f'[ABORT_OPEN_POSITIONS] - [ERROR] Market {market} failed to abort..')
-        
+
                     self.logger.info(f'[ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.')
                 
                 except:
                     self.logger.exception(f'[ABORT_OPEN_POSITIONS] - [ERROR] Unable to abort all positions.')
 
+            # Clear bot agents file
+            bot_agents = []
+            with open('program/bot_agents.json','w') as f:
+                      json.dump(bot_agents, f)
         else:
             self.logger.info('[ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Empty portfolio.')
             

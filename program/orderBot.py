@@ -28,7 +28,7 @@ class BotAgent():
                  ):
         
         # Set logger
-        self.logger = logging.getLogger('logging/api_log.log')
+        self.logger = logging.getLogger('program/logging/api_log.log')
 
         # Initialise class vars
         self.illiquid = []

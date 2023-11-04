@@ -14,7 +14,7 @@ def manage_trade_exits(client):
     '''
 
     # Initiate logger
-    logger = initiate_logger('logging/api_log.log')
+    logger = initiate_logger('program/logging/api_log.log')
 
     # Initialise saving output
     save_output = []

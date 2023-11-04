@@ -11,7 +11,7 @@ from orderBot import BotAgent
 def open_position(client):
 
     # Initialise logger
-    logger = initiate_logger('logging/api_log.log')
+    logger = initiate_logger('program/logging/api_log.log')
 
     # Read in coint pairs
     df = pd.read_csv('program/coint_pairs.csv')

@@ -126,7 +126,7 @@ def store_coint_results(df_market_prices):
 
     # Create and save dataframe
     df_criteria_met = pd.DataFrame(criteria_met_pairs)
-    df_criteria_met.to_csv('program/coint_pairs.csv', index=False)
+    df_criteria_met.to_csv('coint_pairs.csv', index=False)
     del df_criteria_met
 
     return 'saved'
