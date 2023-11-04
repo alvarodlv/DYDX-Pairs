@@ -1,6 +1,8 @@
 import logging 
+import requests
 
 from datetime import datetime, timedelta
+from decouple import config
 
 def initiate_logger(file):
     '''
@@ -101,9 +103,14 @@ def get_iso():
 
     return times_dict
 
-def format_step(size, step):
-    '''
-    Format trade quantity to match step size
-    '''
-    
-    return round(float(size)/float(step))*float(step)
+def send_message(message):
+
+    token = config('TELEGRAM_TOKEN')
+    chat_id = config('TELEGRAM_CHAT_ID')
+    url = f'https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}'
+
+    request = requests.get(url)
+    if request.status_code == 200:
+        return
+    else:
+        return

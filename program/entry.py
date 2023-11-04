@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 
-from funcs import format_number, initiate_logger, format_step
+from funcs import format_number, initiate_logger, send_message
 from constants import ZSCORE_THRESH, USD_PER_TRADE, USD_MIN_COLLATERAL
 from cointegrated_pairs import calc_z_score
 from dydx import DYDX
@@ -148,11 +148,13 @@ def open_position(client):
 
                         # Append to list of bot agents
                         bot_agents.append(bot_open_dict)
+                        message = f'Opened following pairs position: {base_market} and {quote_market}. Current account free collateral sits at: {free_collateral}'
+                        send_message(message)
                         del bot_open_dict
 
     # Save agents
     if len(bot_agents) > 0:
-        logger.info(f'[OPEN_POSITION] - [COMPLETE] Successfully opened {len(bot_agents)} positions.')
+        logger.info(f'[OPEN_POSITION] - [COMPLETE] Open positions completed.')
         with open('bot_agents.json','w') as f:
             json.dump(bot_agents, f, indent=4)
     

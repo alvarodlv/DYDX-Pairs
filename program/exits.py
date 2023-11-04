@@ -1,7 +1,7 @@
 import json
 import time
 
-from funcs import format_number, initiate_logger, format_step
+from funcs import format_number, initiate_logger, send_message
 from constants import CLOSE_AT_ZSCORE_CROSS
 from cointegrated_pairs import calc_z_score
 from dydx import DYDX
@@ -163,6 +163,7 @@ def manage_trade_exits(client):
                 )
 
                 time.sleep(1)
+                send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} & {position_market_m2}.')
 
             except:
                 save_output.append(position)
