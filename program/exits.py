@@ -14,14 +14,14 @@ def manage_trade_exits(client):
     '''
 
     # Initiate logger
-    logger = initiate_logger('program/logging/api_log.log')
+    logger = initiate_logger('logging/api_log.log')
 
     # Initialise saving output
     save_output = []
 
     # Open open trade json file
     try:
-        with open('program/bot_agents.json') as f:
+        with open('bot_agents.json') as f:
             open_positions_file = json.load(f)
     except:
         return 'complete'
@@ -174,7 +174,7 @@ def manage_trade_exits(client):
             save_output.append(position)
 
     # Save remaining items
-    with open('program/bot_agents.json','w') as f:
+    with open('bot_agents.json','w') as f:
         json.dump(save_output, f, indent=4)
     
     logger.info(f'[MANAGE_EXIT] - [COMPLETE] {len(save_output)} positions remaining.')

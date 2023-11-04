@@ -29,7 +29,7 @@ from constants import (
 class DYDX():
 
     def __init__(self):
-        self.logger = initiate_logger('program/logging/api_log.log')
+        self.logger = initiate_logger('logging/api_log.log')
         return
 
     def connect_dydx(self):
@@ -204,7 +204,7 @@ class DYDX():
 
             # Clear bot agents file
             bot_agents = []
-            with open('program/bot_agents.json','w') as f:
+            with open('bot_agents.json','w') as f:
                       json.dump(bot_agents, f)
         else:
             self.logger.info('[ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Empty portfolio.')

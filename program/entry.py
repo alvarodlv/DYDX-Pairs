@@ -11,10 +11,10 @@ from orderBot import BotAgent
 def open_position(client):
 
     # Initialise logger
-    logger = initiate_logger('program/logging/api_log.log')
+    logger = initiate_logger('logging/api_log.log')
 
     # Read in coint pairs
-    df = pd.read_csv('program/coint_pairs.csv')
+    df = pd.read_csv('coint_pairs.csv')
 
     # Get markets
     markets = client.public.get_markets().data
@@ -24,7 +24,7 @@ def open_position(client):
 
     # Open open trade json file
     try:
-        with open('program/bot_agents.json') as f:
+        with open('bot_agents.json') as f:
             open_positions_file = json.load(f)
         
         for p in open_positions_file:
@@ -155,7 +155,7 @@ def open_position(client):
     # Save agents
     if len(bot_agents) > 0:
         logger.info(f'[OPEN_POSITION] - [COMPLETE] Open positions completed.')
-        with open('program/bot_agents.json','w') as f:
+        with open('bot_agents.json','w') as f:
             json.dump(bot_agents, f, indent=4)
     
     else:
