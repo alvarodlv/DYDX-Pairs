@@ -1,0 +1,53 @@
+[
+    {
+        "market_1": "CRV-USD",
+        "market_2": "XTZ-USD",
+        "hedge_ratio": 0.661272059859252,
+        "z_score": 2.2039086125933807,
+        "half_life": 8.0,
+        "order_id_m1": "4cce33ecb2f79206245f427ad7f9ee2861516474b4c45c4cfa0529354850c8f",
+        "order_m1_size": "91",
+        "order_m1_side": "SELL",
+        "order_time_m1": "2023-11-04T16:14:55.311448",
+        "order_id_m2": "4f35f6d4cdbb4c5f812611e3fa44982c5ddca7505413dc11bb94474e3777ab0",
+        "order_m2_size": "65",
+        "order_m2_side": "BUY",
+        "order_time_m2": "2023-11-04T16:15:02.170937",
+        "pair_status": "LIVE",
+        "comments": ""
+    },
+    {
+        "market_1": "AAVE-USD",
+        "market_2": "DOT-USD",
+        "hedge_ratio": 19.19400392375253,
+        "z_score": -1.5458860045335125,
+        "half_life": 17.0,
+        "order_id_m1": "76ae8baaf1077ee33304a0df694334cf9126b9d63bf69019ef4eabd8dcb9d55",
+        "order_m1_size": "0.6",
+        "order_m1_side": "BUY",
+        "order_time_m1": "2023-11-04T16:15:59.719402",
+        "order_id_m2": "54adb692619c6a1141bbabb94f14864138a74385264927bda63869f041f213e",
+        "order_m2_size": "10.7",
+        "order_m2_side": "SELL",
+        "order_time_m2": "2023-11-04T16:16:06.476248",
+        "pair_status": "LIVE",
+        "comments": ""
+    },
+    {
+        "market_1": "AVAX-USD",
+        "market_2": "ADA-USD",
+        "hedge_ratio": 37.60986763305597,
+        "z_score": 1.682008729158016,
+        "half_life": 9.0,
+        "order_id_m1": "33d9f9eb9a31e45eff20bceddfbb8e61480994dc0e6bec4855cf0938cb22159",
+        "order_m1_size": "4.1",
+        "order_m1_side": "SELL",
+        "order_time_m1": "2023-11-04T16:17:34.639795",
+        "order_id_m2": "19543f3fa5012dd97a2ad300256da4c60d5c0ff1e5a79044582adc4af96565c",
+        "order_m2_size": "155",
+        "order_m2_side": "BUY",
+        "order_time_m2": "2023-11-04T16:17:41.090866",
+        "pair_status": "LIVE",
+        "comments": ""
+    }
+]

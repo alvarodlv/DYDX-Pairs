@@ -1,5 +1,4 @@
 .env
 .venv
 logging/
-coint_pairs.csv
 next_steps.txt
