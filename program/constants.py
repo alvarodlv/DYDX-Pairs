@@ -8,16 +8,16 @@ MODE = 'DEVELOPMENT'
 PERIOD_OF_TIME = 1200
 
 # Close all positions
-ABORT_ALL_POSITIONS = True
+ABORT_ALL_POSITIONS = False
 
 # FInd cointegrated pairs
-FIND_CONIT_PARIS = False
+FIND_CONIT_PARIS = True
 
 # Place trades
-PLACE_TRADES = False
+PLACE_TRADES = True
 
 # Manage exists
-MANAGE_EXITS = False
+MANAGE_EXITS = True
 
 # Resolution
 RESOLUTION = '1HOUR'
