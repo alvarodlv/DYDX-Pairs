@@ -1,6 +1,8 @@
+import time
+
 from dydx import DYDX
 from funcs import send_message
-from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS, PLACE_TRADES, MANAGE_EXITS
+from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS, PLACE_TRADES, MANAGE_EXITS, PERIOD_OF_TIME
 from entry import open_position
 from exits import manage_trade_exits
 from cointegrated_pairs import (
@@ -27,15 +29,24 @@ if __name__ == '__main__':
         stored_results = store_coint_results(df_market_prices)
         send_message('Downloaded market prices and stored conitegrated pairs.')
 
+    # Intialise start time
+    cont = True
+    start = time.time()
+
     # Run as always on
-    while True:
+    while cont:
 
         # Place trades for opening positions
         if MANAGE_EXITS:
             manage_trade_exits(client) 
-            send_message('Managed existing trades successfully.')
 
         # Place trades for opening positions
         if PLACE_TRADES:
             open_position(client)
-            send_message('Opened positions successfully.')
+
+        # Break if 20 mins have passed 
+        if time.time() > start + PERIOD_OF_TIME:
+            cont = False
+            send_message('Bot complete. Have a great day.')
+
+    print('DONE')

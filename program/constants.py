@@ -4,17 +4,20 @@ from decouple import config
 # !!! SELECT MODE !!!
 MODE = 'DEVELOPMENT'
 
+# How long to run script in seconds
+PERIOD_OF_TIME = 1200
+
 # Close all positions
 ABORT_ALL_POSITIONS = True
 
 # FInd cointegrated pairs
-FIND_CONIT_PARIS = True
+FIND_CONIT_PARIS = False
 
 # Place trades
-PLACE_TRADES = True
+PLACE_TRADES = False
 
 # Manage exists
-MANAGE_EXITS = True
+MANAGE_EXITS = False
 
 # Resolution
 RESOLUTION = '1HOUR'

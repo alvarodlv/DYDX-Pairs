@@ -1,4 +1,51 @@
-2023-11-04 16:54:15,060 - INFO - [CONNECTION] - [START] Initiating connection to dydX.
-2023-11-04 16:54:15,304 - INFO - [CONNECTION] - [COMPLETE] Connection to dYdX established.
-2023-11-04 16:54:15,460 - INFO - [ABORT_OPEN_POSITIONS] - [START] Aborting all open positions.
-2023-11-04 16:54:18,070 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Empty portfolio.
+2023-11-06 14:55:49,369 - INFO - [CONNECTION] - [START] Initiating connection to dydX.
+2023-11-06 14:55:49,688 - INFO - [CONNECTION] - [COMPLETE] Connection to dYdX established.
+2023-11-06 14:55:49,930 - INFO - [ABORT_OPEN_POSITIONS] - [START] Aborting all open positions.
+2023-11-06 14:55:53,169 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: TRX-USD; Side: SELL; Size: 510; Price: 0.0742.
+2023-11-06 14:55:53,551 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3831.061999
+2023-11-06 14:55:55,552 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:55:56,547 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:55:56,548 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: 1INCH-USD; Side: BUY; Size: 141; Price: 0.441.
+2023-11-06 14:55:56,940 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3836.030082
+2023-11-06 14:55:58,036 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:55:59,180 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:55:59,181 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: XLM-USD; Side: BUY; Size: 370; Price: 0.1676.
+2023-11-06 14:55:59,603 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3840.933417
+2023-11-06 14:56:00,834 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:01,946 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:01,946 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: MATIC-USD; Side: SELL; Size: 71; Price: 0.5323.
+2023-11-06 14:56:02,366 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3845.820169
+2023-11-06 14:56:03,496 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:04,501 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:04,502 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: DOT-USD; Side: SELL; Size: 10.3; Price: 3.65.
+2023-11-06 14:56:05,132 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3850.799005
+2023-11-06 14:56:06,666 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:08,402 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:08,403 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: AAVE-USD; Side: BUY; Size: 0.5; Price: 122.64.
+2023-11-06 14:56:08,921 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3855.747041
+2023-11-06 14:56:09,740 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:10,796 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:10,796 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: FIL-USD; Side: BUY; Size: 11.5; Price: 5.40.
+2023-11-06 14:56:11,176 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3860.591104
+2023-11-06 14:56:12,208 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:13,316 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:13,317 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: LTC-USD; Side: SELL; Size: 0.69; Price: 54.5.
+2023-11-06 14:56:13,714 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3865.556738
+2023-11-06 14:56:14,859 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:15,973 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:15,974 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: ATOM-USD; Side: BUY; Size: 5.8; Price: 10.808.
+2023-11-06 14:56:16,280 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3870.466064
+2023-11-06 14:56:17,622 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:18,842 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:18,842 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: SOL-USD; Side: SELL; Size: 1.2; Price: 30.310.
+2023-11-06 14:56:19,265 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3875.389811
+2023-11-06 14:56:20,288 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:21,802 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:21,802 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: ADA-USD; Side: BUY; Size: 141; Price: 0.441.
+2023-11-06 14:56:22,223 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3923.718435
+2023-11-06 14:56:23,014 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:24,065 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.
+2023-11-06 14:56:24,065 - INFO - [PLACE_MARKET_ORDER] - [START] Placing market order for. Market: CRV-USD; Side: SELL; Size: 88; Price: 0.4267.
+2023-11-06 14:56:24,486 - INFO - [ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: 3928.496147
+2023-11-06 14:56:25,399 - INFO - [PLACE_MARKET_ORDER] - [COMPLETE] Placed order.
+2023-11-06 14:56:26,627 - INFO - [ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.

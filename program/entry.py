@@ -141,7 +141,6 @@ def open_position(client):
                     bot_open_dict, illiquid = bot_agent.open_trades()
                     if illiquid not in illiquid_pairs:
                         illiquid_pairs = illiquid_pairs + illiquid
-                    print(illiquid_pairs)
 
                     # Handle success in opening trades
                     if bot_open_dict['pair_status'] == 'LIVE':
