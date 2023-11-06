@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timedelta
 from decouple import config
 
-def initiate_logger(file):
+def initiate_logger():
     '''
     Initiates logging.
 
@@ -13,25 +13,22 @@ def initiate_logger(file):
     '''
 
     # Get or create logger
-    logger = logging.getLogger(file)
+    logger = logging.getLogger()
 
     if not logger.hasHandlers():
         # Set log level
         logging.getLogger().setLevel(logging.DEBUG)
 
         # Set handlers
-        file_handler = logging.FileHandler(file, mode='w')
         stream_handler = logging.StreamHandler()
 
         # Set formatter
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         
         # Apply formatter
-        file_handler.setFormatter(formatter)
         stream_handler.setFormatter(formatter)
 
         # Add handlers
-        logger.addHandler(file_handler)
         logger.addHandler(stream_handler)
 
     return logger

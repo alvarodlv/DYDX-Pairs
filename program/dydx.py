@@ -29,7 +29,7 @@ from constants import (
 class DYDX():
 
     def __init__(self):
-        self.logger = initiate_logger('logging/api_log.log')
+        self.logger = initiate_logger()
         return
 
     def connect_dydx(self):
