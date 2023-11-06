@@ -17,7 +17,7 @@ def initiate_logger():
 
     if not logger.hasHandlers():
         # Set log level
-        logging.getLogger().setLevel(logging.DEBUG)
+        logging.getLogger().setLevel(logging.INFO)
 
         # Set handlers
         stream_handler = logging.StreamHandler()
