@@ -29,12 +29,8 @@ if __name__ == '__main__':
         stored_results = store_coint_results(df_market_prices)
         send_message('Downloaded market prices and stored conitegrated pairs.')
 
-    # Intialise start time
-    cont = True
-    start = time.time()
-
     # Run as always on
-    while cont:
+    for i in range(1,3):
 
         # Place trades for opening positions
         if MANAGE_EXITS:
@@ -44,9 +40,5 @@ if __name__ == '__main__':
         if PLACE_TRADES:
             open_position(client)
 
-        # Break if 20 mins have passed 
-        if time.time() > start + PERIOD_OF_TIME:
-            cont = False
-            send_message('Bot complete. Have a great day.')
-
-    print('DONE')
+    # Complete message
+    send_message('Bot complete. Have a great day.')
