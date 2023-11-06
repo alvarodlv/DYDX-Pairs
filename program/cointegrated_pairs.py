@@ -101,7 +101,7 @@ def store_coint_results(df_market_prices):
     criteria_met_pairs = []
 
     # Find cointegrated pairs
-    for index, base in enumerate(markets[-10:-1]):
+    for index, base in enumerate(markets[:-1]):
         series_1 = df_market_prices[base].values.astype(float).tolist()
 
         # Get quote pair
