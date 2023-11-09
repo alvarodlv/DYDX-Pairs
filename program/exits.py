@@ -163,7 +163,7 @@ def manage_trade_exits(client):
                 )
 
                 time.sleep(1)
-                send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} & {position_market_m2}.')
+                send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} and {position_market_m2}.')
 
             except:
                 save_output.append(position)

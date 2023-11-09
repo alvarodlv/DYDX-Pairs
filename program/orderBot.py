@@ -183,11 +183,3 @@ class BotAgent():
             self.order_dict['pair_status'] = 'LIVE'
 
         return self.order_dict, self.illiquid
-
-
-
-
-    
-
-    
-
