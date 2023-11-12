@@ -4,8 +4,11 @@ from decouple import config
 # !!! SELECT MODE !!!
 MODE = 'DEVELOPMENT'
 
+# Beginning Balance
+START_BALANCE = 2000
+
 # How long to run script in seconds
-PERIOD_OF_TIME = 1200
+PERIOD_OF_TIME = 1000
 
 # Close all positions
 ABORT_ALL_POSITIONS = False

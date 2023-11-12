@@ -1,5 +1,6 @@
 import json
 import time
+import pandas as pd
 
 from funcs import format_number, initiate_logger, send_message
 from constants import CLOSE_AT_ZSCORE_CROSS
@@ -15,23 +16,29 @@ def manage_trade_exits(client):
 
     # Initiate logger
     logger = initiate_logger()
+    tele_message = '----- MANAGE TRADES -----\n\nClosed the following positions:\n'
+    exit_pos = 0
 
     # Initialise saving output
     save_output = []
 
-    # Open open trade json file
+    # Open coint_pairs.csv
+    df_coint = pd.read_csv('coint_pairs.csv')
+
+
+    # Open trade json file
     try:
         with open('bot_agents.json') as f:
             open_positions_file = json.load(f)
     except:
-        return 'complete'
+        return 'complete', exit_pos
     
     # Guard exit if no open positions
     if len(open_positions_file) < 1:
-        return 'complete'
+        return 'complete', exit_pos
     
     # Get all open positions per trading platform
-    logger.info('[MANAGE_EXIT] - [START] Managing exits of current trades.')
+    logger.info('[MANAGE_EXIT] - Managing exits of current trades.')
     exchange_pos = client.private.get_positions(status='OPEN')
     all_exc_pos = exchange_pos.data['positions']
     markets_live = []
@@ -77,7 +84,7 @@ def manage_trade_exits(client):
 
         # Guard if all not True
         if not check_m1 or not check_m2 or not check_live:
-            logger.info(f'[MANAGE_EXIT] - [EXCEPTION] Not all open positions match exchange records for {position_market_m1} and {position_market_m2}.')
+            logger.info(f'[MANAGE_EXIT] - Not all open positions match exchange records for {position_market_m1} and {position_market_m2}.')
             continue
 
         # Get prices
@@ -104,8 +111,16 @@ def manage_trade_exits(client):
             z_score_level_check = abs(z_score_current >= abs(z_score_traded))
             z_score_cross_check = (z_score_current < 0 and z_score_traded > 0) or (z_score_current > 0 and z_score_traded < 0)
 
+            # Set trigger for not coint pairs 
+            pairs_1 = list(df_coint['base_market']+' '+df_coint['quote_market'])
+            pairs_2 = list(df_coint['quote_market']+' '+df_coint['base_market'])
+            pair = position_market_m1 +' ' + position_market_m2
+            coint_check = pair in pairs_1 or pair in pairs_2
+            if coint_check == False:
+                logger.info(f'[MANAGE_EXIT] - {pair} no longer cointegrated. Attempt to close.')
+
             # Close trade
-            if z_score_level_check and z_score_cross_check:
+            if (z_score_level_check and z_score_cross_check) or coint_check == False:
 
                 # Initiate close trigger
                 is_close = True
@@ -163,11 +178,16 @@ def manage_trade_exits(client):
                 )
 
                 time.sleep(1)
-                send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} and {position_market_m2}.')
+                exit_pos +=1
+                #send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} and {position_market_m2}.')
+                if coint_check:
+                    tele_message += f'{position_market_m1} %26 {position_market_m2}: crossed threshold.\n'
+                else:
+                    tele_message += f'{position_market_m1} %26 {position_market_m2}: no longer cointegrated.\n'
 
             except:
                 save_output.append(position)
-                logger.exception(f'[MANAGE_EXIT] - [ERROR] Exit failed for {position_market_m1} & {position_market_m2}.')
+                logger.exception(f'[MANAGE_EXIT] - Exit failed for {position_market_m1} & {position_market_m2}.')
 
         # Keep record of items and save
         else:
@@ -176,7 +196,10 @@ def manage_trade_exits(client):
     # Save remaining items
     with open('bot_agents.json','w') as f:
         json.dump(save_output, f, indent=4)
-    
-    logger.info(f'[MANAGE_EXIT] - [COMPLETE] {len(save_output)} positions remaining.')
 
-    return
+    if exit_pos == 0:
+        tele_message = ''
+
+    logger.info(f'[MANAGE_EXIT] - {len(save_output)} positions remaining.')
+
+    return tele_message, exit_pos

@@ -12,6 +12,7 @@ def open_position(client):
 
     # Initialise logger
     logger = initiate_logger()
+    tele_message = '----- OPEN TRADES -----\n\nOpened the following positions:\n'
 
     # Read in coint pairs
     df = pd.read_csv('coint_pairs.csv')
@@ -21,6 +22,9 @@ def open_position(client):
 
     # Initialise container for BotAgent results
     bot_agents = []
+
+    # Check for new positions
+    new_pos = 0
 
     # Open open trade json file
     try:
@@ -33,7 +37,7 @@ def open_position(client):
         bot_agents = []
 
     # Log & initialise illiquid pairs list
-    logger.info(f'[OPEN_POSITION] - [START] Beginning process of opening orders.')
+    logger.info(f'[OPEN_TRADE] - Beginning process of opening orders.')
     illiquid_pairs = []
 
     # Find z-score trigger
@@ -120,7 +124,7 @@ def open_position(client):
                         break
 
                     # Create Bot Agent
-                    logger.info(f'[OPEN_POSITION] - [START] Processing orders for {base_market} & {quote_market}.')
+                    logger.info(f'[OPEN_TRADE] - Processing orders for {base_market} & {quote_market}.')
                     bot_agent = BotAgent(
                             client,
                             market_1=base_market,
@@ -147,18 +151,18 @@ def open_position(client):
 
                         # Append to list of bot agents
                         bot_agents.append(bot_open_dict)
-                        message = f'Opened following pairs position: {base_market} and {quote_market}. Current account free collateral sits at: {free_collateral}'
-                        send_message(message)
+                        new_pos +=1
+                        tele_message += f'{base_market} %26 {quote_market}.\n'
                         del bot_open_dict
 
     # Save agents
-    if len(bot_agents) > 0:
-        logger.info(f'[OPEN_POSITION] - [COMPLETE] Open positions completed.')
+    if new_pos > 0:
+        logger.info(f'[OPEN_TRADE] - Open positions completed.')
         with open('bot_agents.json','w') as f:
             json.dump(bot_agents, f, indent=4)
     
     else:
-        logger.exception(f'[OPEN_POSITION] - [COMPLETE] Did not open any positions.')
+        logger.info(f'[OPEN_TRADE] - Did not open any positions.')
+        tele_message = ''
                         
-
-    return
+    return tele_message, new_pos
