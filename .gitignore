@@ -2,3 +2,5 @@
 .venv
 next_steps.txt
 telegramBot.py
+program/bot_agents.json
+program/coint_pairs.csv

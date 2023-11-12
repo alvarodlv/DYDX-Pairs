@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     # Log In
     client = dYdX.connect_dydx()
-    send_message(f'⚡ DYDX Pairs Trading Bot Initiated ⚡\n_________________________________\n\nSuccessfully conected to dYdX client.\n\n Bot Parameters...\nAbort all positions: {ABORT_ALL_POSITIONS}.\nFind cointegrated pairs: {FIND_CONIT_PARIS}.\nManage existing trades: {MANAGE_EXITS}.\nPlace new trades: {PLACE_TRADES}.\n')
+    send_message(f'⚡ DYDX Pairs Trading Bot Initiated ⚡\n_________________________________\n\nSuccessfully conected to dYdX client.\n\nBot Parameters...\nAbort all positions: {ABORT_ALL_POSITIONS}\nFind cointegrated pairs: {FIND_CONIT_PARIS}\nManage existing trades: {MANAGE_EXITS}\nPlace new trades: {PLACE_TRADES}\n')
 
     # Abort all open positions
     tele_message = '----- DATA %26 OPEN POSITIONS -----\n\n'
