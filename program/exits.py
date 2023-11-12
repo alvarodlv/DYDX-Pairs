@@ -181,9 +181,9 @@ def manage_trade_exits(client):
                 exit_pos +=1
                 #send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} and {position_market_m2}.')
                 if coint_check:
-                    tele_message += f'{position_market_m1} %26 {position_market_m2}: crossed threshold.\n'
+                    tele_message += f'{position_market_m1} %26 {position_market_m2}: crossed.\n'
                 else:
-                    tele_message += f'{position_market_m1} %26 {position_market_m2}: no longer cointegrated.\n'
+                    tele_message += f'{position_market_m1} %26 {position_market_m2}: not coint.\n'
 
             except:
                 save_output.append(position)
