@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     # Stats
     account = client.private.get_account()
-    raw_collat = float(account.data['account']['equity'])
+    raw_collat = float(account.data['account']['freeCollateral'])
     free_collateral = '${:,.2f}'.format(raw_collat)
     raw_equity = float(account.data['account']['equity'])
     equity = '${:,.2f}'.format(raw_equity)
