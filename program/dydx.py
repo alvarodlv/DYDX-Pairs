@@ -36,7 +36,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[CONNECTION] - [START] Initiating connection to dydX.')
+        self.logger.info(f'[CONNECTION] - Initiating connection to dydX.')
 
         # Initiate Connection
         try:
@@ -53,10 +53,10 @@ class DYDX():
             web3=Web3(Web3.HTTPProvider(HTTP_PROVIDER))
             )
 
-            self.logger.info(f'[CONNECTION] - [COMPLETE] Connection to dYdX established.')
+            self.logger.info(f'[CONNECTION] - Connection to dYdX established.')
 
         except:
-            self.logger.exception(f'[CONNECTION] - [ERROR] Failed to establish connection to dYdX.')
+            self.logger.exception(f'[CONNECTION] - Failed to establish connection to dYdX.')
             exit(1)
 
         return client
@@ -73,10 +73,9 @@ class DYDX():
         try:
             account = client.private.get_account()
             free_collateral = account.data['account']['freeCollateral']
-            self.logger.info(f'[ACCOUNT_INFO] - [COMPLETE] Account information retrieved. Free collateral: {free_collateral}')
 
         except:
-            self.logger.exception(f'[ACCOUNT_INFO] - [ERROR] Failed to retrieve account information.')
+            self.logger.exception(f'[ACCOUNT_INFO] - Failed to retrieve account information.')
             exit(1)
 
         return account, float(free_collateral)
@@ -95,7 +94,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[PLACE_MARKET_ORDER] - [START] Placing market order for. Market: {market}; Side: {side}; Size: {size}; Price: {price}.')
+        self.logger.info(f'[MARKET_ORDER] - Placing market order for. Market: {market}; Side: {side}; Size: {size}; Price: {price}.')
 
 
         # Get Position ID
@@ -104,7 +103,7 @@ class DYDX():
             position_id = account.data['account']['positionId']
         
         except:
-            self.logger.exception(f'[PLACE_MARKET_ORDER] - [ERROR] Failed to retrieve account position ID.')
+            self.logger.exception(f'[MARKET_ORDER] - Failed to retrieve account position ID.')
             exit(1)
 
         # Get Expiration Time
@@ -126,11 +125,10 @@ class DYDX():
                 time_in_force='FOK', # Fill or Kill
                 reduce_only=reduce_only # If True - will net with previous orders
                 )
-            self.logger.info(f'[PLACE_MARKET_ORDER] - [COMPLETE] Placed order.')
+            self.logger.info(f'[MARKET_ORDER] - Placed order for {market}.')
 
         except:
-            self.logger.exception(f'[PLACE_MARKET_ORDER] - [ERROR] Failed to place order.')
-            exit(1)
+            self.logger.exception(f'[MARKET_ORDER] - Failed to place order for {market}.')
 
         return placed_order.data
     
@@ -147,7 +145,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[ABORT_OPEN_POSITIONS] - [START] Aborting all open positions.')
+        self.logger.info(f'[ABORT_TRADE] - Aborting all open positions.')
 
         # Cancel all orders
         client.private.cancel_all_orders()
@@ -192,19 +190,19 @@ class DYDX():
 
                     # Abort if order unfilled
                     if order_status == 'CANCELED':
-                        self.logger.info(f'[ABORT_OPEN_POSITIONS] - [ERROR] Market {market} failed to abort..')
+                        self.logger.exception(f'[ABORT_TRADE] - Market {market} failed to abort.')
 
-                    self.logger.info(f'[ABORT_OPEN_POSITIONS] - [COMPLETE] All positions successfully aborted.')
+                    self.logger.info(f'[ABORT_TRADE] - {market} successfully aborted.')
                 
                 except:
-                    self.logger.exception(f'[ABORT_OPEN_POSITIONS] - [ERROR] Unable to abort all positions.')
+                    self.logger.exception(f'[ABORT_TRADE] - Market {market} failed to abort.')
 
             # Clear bot agents file
             bot_agents = []
             with open('bot_agents.json','w') as f:
                       json.dump(bot_agents, f)
         else:
-            self.logger.info('[ABORT_OPEN_POSITIONS] - [COMPLETE] No positions to abort. Empty portfolio.')
+            self.logger.info('[ABORT_TRADE] - No positions to abort. Empty portfolio.')
             
         return close_orders
     
@@ -239,7 +237,7 @@ class DYDX():
                     limit=100
                 )
             except:
-                self.logger.exception(f'[GET_HIST_CANDLES] - [ERROR] Unable to source historical candles for market pair: {market}')
+                self.logger.exception(f'[GET_HIST] - Unable to source historical candles for market pair: {market}')
 
             # Structure data
             for candle in candles.data['candles']:
@@ -249,7 +247,7 @@ class DYDX():
             close_prices.reverse()
         
         # Log
-        self.logger.info(f'[GET_HIST_CANDLES] - [COMPLETE] Close prices for market pair {market} saved.')
+        self.logger.info(f'[GET_HIST] - Close prices for market pair {market} saved.')
 
         return close_prices
 
@@ -263,7 +261,7 @@ class DYDX():
         '''
 
         # Log
-        self.logger.info(f'[MARKET_PRICES] - [START] Constructing market prices.')
+        self.logger.info(f'[MARKET_PRICES] - Constructing market prices.')
         start = timer()
 
         # Define variables
@@ -271,7 +269,6 @@ class DYDX():
         markets = client.public.get_markets()
 
         # Find tradeable pairs
-        self.logger.info(f'[MARKET_PRICES] - [ACTION] Finding tradeable market pairs.')
         for market in markets.data['markets'].keys():
             market_info = markets.data['markets'][market]
             if market_info['status'] == 'ONLINE' and market_info['type'] == 'PERPETUAL':
@@ -290,14 +287,17 @@ class DYDX():
             df = pd.merge(df, df_add, how='outer', on='datetime', copy=False)
             del df_add
 
+        # Bfill nans
+        df = df.bfill()
+        
         # Check any cols with Nan
         nans = df.columns[df.isna().any()].tolist()
         if len(nans) > 0:
-            self.logger.info(f'[MARKET_PRICES] - [ACTION] Dropping following market pairs with Nans: {nans}.')
+            self.logger.info(f'[MARKET_PRICES] - Dropping following market pairs with Nans: {nans}.')
             df.drop(columns=nans, inplace=True)
         
         end = timer()
-        self.logger.info(f'[MARKET_PRICES] - [COMPLETE] Market prices stored in dataframe. {round((end-start)/60,2)} mins')
+        self.logger.info(f'[MARKET_PRICES] - Market prices stored in dataframe. {round((end-start)/60,2)} mins')
 
         return df
     
@@ -317,7 +317,7 @@ class DYDX():
             if 'order' in order.data.keys():
                 return order.data['order']['status']
         
-        self.logger.info(f'[CHECK_ORDER_STATUS] - [ERROR] Unable to check status of order: {orderId}')
+        self.logger.info(f'[CHECK_ORDER_STATUS] - Unable to check status of order: {orderId}')
         
         return 'FAILED'
     
@@ -343,7 +343,7 @@ class DYDX():
             )
 
         except:
-            self.logger.exception(f'[GET_RECENT_CANDLES] - [ERROR] Unable to source recent candles for market pair: {market}')
+            self.logger.exception(f'[GET_RECENT] - Unable to source recent candles for market pair: {market}')
 
         # Structure data
         for candle in candles.data['candles']:
