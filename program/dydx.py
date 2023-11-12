@@ -288,7 +288,7 @@ class DYDX():
             del df_add
 
         # Bfill nans
-        df = df.bfill()
+        df = df.fillna(method='bfill', inplace=True)
         
         # Check any cols with Nan
         nans = df.columns[df.isna().any()].tolist()
