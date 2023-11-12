@@ -179,7 +179,6 @@ def manage_trade_exits(client):
 
                 time.sleep(1)
                 exit_pos +=1
-                #send_message(f'[MANAGE EXITS] Closed following pairs position: {position_market_m1} and {position_market_m2}.')
                 if coint_check:
                     tele_message += f'{position_market_m1} %26 {position_market_m2}: crossed.\n'
                 else:
