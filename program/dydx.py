@@ -19,7 +19,8 @@ from constants import (
     DYDX_PASSPHRASE,
     STARK_PRIVATE_KEY,
     HTTP_PROVIDER,
-    RESOLUTION
+    RESOLUTION,
+    DIR
 )
 
 
@@ -199,7 +200,7 @@ class DYDX():
 
             # Clear bot agents file
             bot_agents = []
-            with open('bot_agents.json','w') as f:
+            with open(DIR+'/bot_agents.json','w') as f:
                       json.dump(bot_agents, f)
         else:
             self.logger.info('[ABORT_TRADE] - No positions to abort. Empty portfolio.')
@@ -288,7 +289,7 @@ class DYDX():
             del df_add
 
         # Bfill nans
-        df = df.fillna(method='bfill', inplace=True)
+        #df = df.bfill()
         
         # Check any cols with Nan
         nans = df.columns[df.isna().any()].tolist()

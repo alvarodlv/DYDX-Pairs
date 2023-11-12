@@ -3,7 +3,7 @@ import time
 import pandas as pd
 
 from funcs import format_number, initiate_logger, send_message
-from constants import CLOSE_AT_ZSCORE_CROSS
+from constants import CLOSE_AT_ZSCORE_CROSS, DIR
 from cointegrated_pairs import calc_z_score
 from dydx import DYDX
 from pprint import pprint
@@ -25,10 +25,9 @@ def manage_trade_exits(client):
     # Open coint_pairs.csv
     df_coint = pd.read_csv('coint_pairs.csv')
 
-
     # Open trade json file
     try:
-        with open('bot_agents.json') as f:
+        with open(DIR+'/bot_agents.json') as f:
             open_positions_file = json.load(f)
     except:
         return 'complete', exit_pos
@@ -193,7 +192,7 @@ def manage_trade_exits(client):
             save_output.append(position)
 
     # Save remaining items
-    with open('bot_agents.json','w') as f:
+    with open(DIR+'/bot_agents.json','w') as f:
         json.dump(save_output, f, indent=4)
 
     if exit_pos == 0:

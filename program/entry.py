@@ -1,9 +1,8 @@
 import json
 import pandas as pd
-import numpy as np
 
 from funcs import format_number, initiate_logger, send_message
-from constants import ZSCORE_THRESH, USD_PER_TRADE, USD_MIN_COLLATERAL
+from constants import ZSCORE_THRESH, USD_PER_TRADE, USD_MIN_COLLATERAL, DIR
 from cointegrated_pairs import calc_z_score
 from dydx import DYDX
 from orderBot import BotAgent
@@ -28,7 +27,7 @@ def open_position(client):
 
     # Open open trade json file
     try:
-        with open('bot_agents.json') as f:
+        with open(DIR+'/bot_agents.json') as f:
             open_positions_file = json.load(f)
         
         for p in open_positions_file:
@@ -158,7 +157,8 @@ def open_position(client):
     # Save agents
     if new_pos > 0:
         logger.info(f'[OPEN_TRADE] - Open positions completed.')
-        with open('bot_agents.json','w') as f:
+        
+        with open(DIR+'/bot_agents.json','w') as f:
             json.dump(bot_agents, f, indent=4)
     
     else:

@@ -3,6 +3,8 @@ from decouple import config
 
 # !!! SELECT MODE !!!
 MODE = 'DEVELOPMENT'
+ENV = 'LAPTOP'
+DIR = '/Users/alvarodelavega/Desktop/DYDX-Bot/program' if ENV == 'LAPTOP' else '/home/ubuntu/dydx_bot/program'
 
 # Beginning Balance
 START_BALANCE = 2000
@@ -11,7 +13,7 @@ START_BALANCE = 2000
 PERIOD_OF_TIME = 1000
 
 # Close all positions
-ABORT_ALL_POSITIONS = False
+ABORT_ALL_POSITIONS = True
 
 # FInd cointegrated pairs
 FIND_CONIT_PARIS = True

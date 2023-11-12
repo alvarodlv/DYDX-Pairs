@@ -55,13 +55,27 @@ if __name__ == '__main__':
 
     # Stats
     account = client.private.get_account()
+
+    # Open Positions
+    positions = ''
+    if len(account.data['account']['openPositions']) > 0:
+        for key, value in account.data['account']['openPositions'].items():
+            positions += f'{key}\n'
+        send_message(f'----- OPEN POSITIONS -----\n\n{positions}')
+
+    # Collateral
     raw_collat = float(account.data['account']['freeCollateral'])
     free_collateral = '${:,.2f}'.format(raw_collat)
+
+    # Equity
     raw_equity = float(account.data['account']['equity'])
     equity = '${:,.2f}'.format(raw_equity)
+
+    # Returns
     raw_percent = (raw_equity / START_BALANCE - 1)*100
     returns = '{:.2f}'.format(raw_percent)
-    send_message(f'----- STATS -----\n\nAccount equity: {equity}\nFree Collateral: {free_collateral}\nCurrent return: {returns}%\nOpened positions: {new_pos}\nManaged positions: {exit_pos}')
 
+    send_message(f'----- STATS -----\n\nAccount equity: {equity}\nFree Collateral: {free_collateral}\nCurrent return: {returns}%\nOpened positions: {new_pos}\nManaged positions: {exit_pos}\n')
+        
     # Complete message
-    send_message('Bot complete. Have a great day.')
+    send_message('✅ ----- BOT COMPLETE ----- ✅')
