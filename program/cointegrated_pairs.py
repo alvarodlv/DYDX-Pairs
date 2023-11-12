@@ -3,7 +3,7 @@ import numpy as np
 import statsmodels.api as sm
 
 from statsmodels.tsa.stattools import coint
-from constants import MAX_HALF_LIFE, WINDOW
+from constants import MAX_HALF_LIFE, WINDOW, DIR
 
 def calc_half_life(spread):
     '''
@@ -126,7 +126,7 @@ def store_coint_results(df_market_prices):
 
     # Create and save dataframe
     df_criteria_met = pd.DataFrame(criteria_met_pairs)
-    df_criteria_met.to_csv('coint_pairs.csv', index=False)
+    df_criteria_met.to_csv(DIR +'/coint_pairs.csv', index=False)
     del df_criteria_met
 
     return 'saved'

@@ -14,7 +14,7 @@ def open_position(client):
     tele_message = '----- OPEN TRADES -----\n\nOpened the following positions:\n'
 
     # Read in coint pairs
-    df = pd.read_csv('coint_pairs.csv')
+    df = pd.read_csv(DIR+'/coint_pairs.csv')
 
     # Get markets
     markets = client.public.get_markets().data

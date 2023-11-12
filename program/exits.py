@@ -23,7 +23,7 @@ def manage_trade_exits(client):
     save_output = []
 
     # Open coint_pairs.csv
-    df_coint = pd.read_csv('coint_pairs.csv')
+    df_coint = pd.read_csv(DIR+'/coint_pairs.csv')
 
     # Open trade json file
     try:
