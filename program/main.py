@@ -61,7 +61,7 @@ if __name__ == '__main__':
     if len(account.data['account']['openPositions']) > 0:
         for key, value in account.data['account']['openPositions'].items():
             positions += f'{key}\n'
-        send_message(f'----- OPEN POSITIONS -----\n\n{positions}')
+        send_message(f'----- CURRENT POSITIONS -----\n\n{positions}')
 
     # Collateral
     raw_collat = float(account.data['account']['freeCollateral'])
