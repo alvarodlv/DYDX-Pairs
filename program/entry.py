@@ -11,7 +11,7 @@ def open_position(client):
 
     # Initialise logger
     logger = initiate_logger()
-    tele_message = '₿ ----- OPEN TRADES ----- ₿\n\nOpened the following positions:\n'
+    tele_message = '🚀 ----- OPEN TRADES ----- 🚀\n\nOpened the following positions...\n'
 
     # Read in coint pairs
     df = pd.read_csv(DIR+'/coint_pairs.csv')

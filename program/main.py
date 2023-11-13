@@ -2,7 +2,7 @@ import time
 
 from dydx import DYDX
 from funcs import send_message
-from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS, PLACE_TRADES, MANAGE_EXITS, PERIOD_OF_TIME, START_BALANCE
+from constants import ABORT_ALL_POSITIONS, FIND_CONIT_PARIS, PLACE_TRADES, MANAGE_EXITS, START_BALANCE, MODE
 from entry import open_position
 from exits import manage_trade_exits
 from cointegrated_pairs import (
@@ -16,10 +16,10 @@ if __name__ == '__main__':
 
     # Log In
     client = dYdX.connect_dydx()
-    send_message(f'⚡ DYDX Pairs Trading Bot Initiated ⚡\n_________________________________\n\nSuccessfully conected to dYdX client.\n\nBot Parameters...\nAbort all positions: {ABORT_ALL_POSITIONS}\nFind cointegrated pairs: {FIND_CONIT_PARIS}\nManage existing trades: {MANAGE_EXITS}\nPlace new trades: {PLACE_TRADES}\n')
+    send_message(f'⚡ DYDX Pairs Trading Bot Initiated ⚡\n_________________________________\n\nSuccessfully conected to dYdX client.\n\nBot Parameters...\nMode: {MODE}\nAbort all positions: {ABORT_ALL_POSITIONS}\nFind cointegrated pairs: {FIND_CONIT_PARIS}\nManage existing trades: {MANAGE_EXITS}\nPlace new trades: {PLACE_TRADES}\n')
 
     # Abort all open positions
-    tele_message = '📊 ----- DATA %26 OPEN POSITIONS ----- 📊\n\n'
+    tele_message = '📊 ----- DATA %26 OPEN POSITIONS ----- 📊\n\nTasks...\n'
     if ABORT_ALL_POSITIONS:
         close_orders = dYdX.abort_all_positions(client)
         if len(close_orders) > 0:
