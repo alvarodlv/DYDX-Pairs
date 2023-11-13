@@ -221,7 +221,7 @@ class DYDX():
 
         # Extract historical price data for each timeframe
         ISO_TIMES = get_iso()
-        for timeframe in ISO_TIMES.keys():
+        for timeframe in reversed(ISO_TIMES.keys()):
 
             # Confirm times needewd
             tf_obj = ISO_TIMES[timeframe]
@@ -247,6 +247,7 @@ class DYDX():
             # Construct dict
             close_prices.reverse()
         
+
         # Log
         self.logger.info(f'[GET_HIST] - Close prices for market pair {market} saved.')
 
@@ -287,9 +288,12 @@ class DYDX():
             df_add.set_index('datetime', inplace=True)
             df = pd.merge(df, df_add, how='outer', on='datetime', copy=False)
             del df_add
+        
+        # Sort by datewtime index
+        df = df.sort_index()
 
         # Bfill nans
-        #df = df.bfill()
+        df = df.bfill()
         
         # Check any cols with Nan
         nans = df.columns[df.isna().any()].tolist()
