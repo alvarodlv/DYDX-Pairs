@@ -16,7 +16,7 @@ def manage_trade_exits(client):
 
     # Initiate logger
     logger = initiate_logger()
-    tele_message = '💸----- MANAGE TRADES -----💸\n\nClosed the following positions:\n'
+    tele_message = '💸 ----- MANAGE TRADES ----- 💸\n\nClosed the following positions:\n'
     exit_pos = 0
 
     # Initialise saving output
