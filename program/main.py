@@ -33,7 +33,7 @@ if __name__ == '__main__':
     if FIND_CONIT_PARIS:
         df_market_prices = dYdX.construct_market_prices(client)
         stored_results = store_coint_results(df_market_prices)
-        tele_message += 'Downloaded market prices and stored conitegrated pairs.\n'
+        tele_message += 'Downloaded market prices\nStored conitegrated pairs.\n'
     else:
         tele_message += 'Not downloading new market data.\n'
     
@@ -57,11 +57,16 @@ if __name__ == '__main__':
     account = client.private.get_account()
 
     # Open Positions
-    positions = ''
-    if len(account.data['account']['openPositions']) > 0:
-        for key, value in account.data['account']['openPositions'].items():
-            positions += f'{key}\n'
-        send_message(f'----- CURRENT POSITIONS -----\n\n{positions}')
+    # positions = ''
+    # if len(account.data['account']['openPositions']) > 0:
+    #     for key, value in account.data['account']['openPositions'].items():
+    #         positions += f'{key}\n'
+    #     send_message(f'----- CURRENT POSITIONS -----\n\n{positions}')
+    positions = [i for i in account.data['account']['openPositions'].keys()]
+    if len(positions) > 0:
+        result = ''.join([' %26 '.join(pair) + '\n' for pair in zip(positions[0::2],positions[1::2])])
+        send_message(f'----- CURRENT POSITIONS -----\n\n{result}')
+    
 
     # Collateral
     raw_collat = float(account.data['account']['freeCollateral'])
