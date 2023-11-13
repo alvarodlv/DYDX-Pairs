@@ -19,7 +19,7 @@ if __name__ == '__main__':
     send_message(f'⚡ DYDX Pairs Trading Bot Initiated ⚡\n_________________________________\n\nSuccessfully conected to dYdX client.\n\nBot Parameters...\nAbort all positions: {ABORT_ALL_POSITIONS}\nFind cointegrated pairs: {FIND_CONIT_PARIS}\nManage existing trades: {MANAGE_EXITS}\nPlace new trades: {PLACE_TRADES}\n')
 
     # Abort all open positions
-    tele_message = '----- DATA %26 OPEN POSITIONS -----\n\n'
+    tele_message = '📊----- DATA %26 OPEN POSITIONS -----📊\n\n'
     if ABORT_ALL_POSITIONS:
         close_orders = dYdX.abort_all_positions(client)
         if len(close_orders) > 0:
@@ -57,15 +57,10 @@ if __name__ == '__main__':
     account = client.private.get_account()
 
     # Open Positions
-    # positions = ''
-    # if len(account.data['account']['openPositions']) > 0:
-    #     for key, value in account.data['account']['openPositions'].items():
-    #         positions += f'{key}\n'
-    #     send_message(f'----- CURRENT POSITIONS -----\n\n{positions}')
     positions = [i for i in account.data['account']['openPositions'].keys()]
     if len(positions) > 0:
         result = ''.join([' %26 '.join(pair) + '\n' for pair in zip(positions[0::2],positions[1::2])])
-        send_message(f'----- CURRENT POSITIONS -----\n\n{result}')
+        send_message(f'📓----- CURRENT POSITIONS -----📓\n\n{result}')
     
 
     # Collateral
@@ -80,7 +75,7 @@ if __name__ == '__main__':
     raw_percent = (raw_equity / START_BALANCE - 1)*100
     returns = '{:.2f}'.format(raw_percent)
 
-    send_message(f'----- STATS -----\n\nAccount equity: {equity}\nFree Collateral: {free_collateral}\nCurrent return: {returns}%\nOpened positions: {new_pos}\nManaged positions: {exit_pos}\n')
+    send_message(f'🧮----- STATS -----🧮\n\nAccount equity: {equity}\nFree Collateral: {free_collateral}\nCurrent return: {returns}%\nOpened positions: {new_pos}\nManaged positions: {exit_pos}\n')
         
     # Complete message
     send_message('✅ ----- BOT COMPLETE ----- ✅')
