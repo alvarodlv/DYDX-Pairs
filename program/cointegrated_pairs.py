@@ -126,6 +126,7 @@ def store_coint_results(df_market_prices):
 
     # Create and save dataframe
     df_criteria_met = pd.DataFrame(criteria_met_pairs)
+    df_criteria_met = df_criteria_met.sort_values(by=['half_life'], ascending=True)
     df_criteria_met.to_csv(DIR +'/coint_pairs.csv', index=False)
     del df_criteria_met
 
